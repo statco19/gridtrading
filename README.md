@@ -4,11 +4,6 @@
 
 ### 저점과 고점을 놓칠까봐 두려워 잠을 설치는 그대를 FOMO(Fear of Missing Out)에서 해방시킬 단 하나의 비결!
 
-# Grid Trading이란?
-
-![image](https://user-images.githubusercontent.com/71916314/169687872-514bc74e-0e2e-4d69-8f54-482bc29e833c.gif)
-
-
 # Architecture
 
 ### In a nutshell
