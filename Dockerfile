@@ -9,4 +9,5 @@ ADD ${JAR_FILE} app.jar
 
 # app.jar 파일을 실행합니다.
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+#ENTRYPOINT ["./wait-for-it.sh", "database:3306", "--", "java", "-jar", "app.jar"]
 #ENTRYPOINT ["java","-jar","/app.jar"]
