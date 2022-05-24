@@ -1,16 +1,10 @@
 spring:
   datasource:
-#    url: jdbc:mariadb://database:3306/database_name?useUnicode=true
-    url: jdbc:mariadb://localhost:3306/test
+    url: jdbc:mariadb://database:3306/database_name?useSSL=false
     username: root
     password: 1234
     driver-class-name: org.mariadb.jdbc.Driver
 
-#  datasource:
-#    url: jdbc:h2:tcp://localhost/~/test
-#    username: sa
-#    password:
-#    driver-class-name: org.h2.Driver
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -19,4 +13,3 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MariaDB103Dialect
-#        dialect: org.hibernate.dialect.H2Dialect

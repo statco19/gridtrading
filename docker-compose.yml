@@ -1,12 +1,12 @@
-version: "3.2"
+version: "3"
 services:
   database:
     container_name: database
-    image: mariadb:10.7
-    volumes:
-      - ~/docker/mariadb/etc/mysql/conf.d:/etc/mysql/conf.d:ro
-      - ~/docker/mariadb/var/lib/mysql:/var/lib/mysql
-      - ~/docker/mariadb/var/log/maria:/var/log/maria
+    image: mariadb
+#    volumes:
+#      - ~/docker/mariadb/etc/mysql/conf.d:/etc/mysql/conf.d:ro
+#      - ~/docker/mariadb/var/lib/mysql:/var/lib/mysql
+#      - ~/docker/mariadb/var/log/maria:/var/log/maria
     environment:
       - MYSQL_DATABASE=database_name
       - MYSQL_ROOT_PASSWORD=1234
@@ -16,13 +16,12 @@ services:
     ports:
       - "3306:3306"
 
-  application:
-    build:
-      context: "./"
-      dockerfile: "Dockerfile"
-    restart: on-failure
+  server:
+    build: .
+    container_name: server
+    restart: always
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mariadb://database:3306/database_name?useUnicode=true
+      SPRING_DATASOURCE_URL: jdbc:mariadb://database:3306/database_name?useSSL=false
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 1234
     ports:
