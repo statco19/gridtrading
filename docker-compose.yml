@@ -18,6 +18,7 @@ services:
 
   server:
     build: .
+#    image: backend
     container_name: server
     restart: always
     environment:

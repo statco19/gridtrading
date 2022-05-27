@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @Controller
 @RequestMapping
 @RequiredArgsConstructor
@@ -24,5 +26,17 @@ public class BasicController {
     public String add(@RequestBody Order order) {
         orderService.saveOrder(order);
         return "new order saved.";
+    }
+
+    @PostMapping("/recent-trade")
+    @ResponseBody
+    public String show(@RequestParam String coin) throws IOException {
+        return orderService.getCoinTradePrice(coin);
+    }
+
+    @GetMapping("/recent-trade")
+    @ResponseBody
+    public String show2() throws IOException {
+        return orderService.getCoinTradePrice("KRW-BTC");
     }
 }
