@@ -52,7 +52,7 @@ services:
     ports:
       - "3306:3306"
 
-  spring:
+  server:
     build: .
 #    image: backend
     container_name: server
