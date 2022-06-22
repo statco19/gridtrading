@@ -13,3 +13,14 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MariaDB103Dialect
+
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      acks: all
+
+    consumer:
+      bootstrap-servers: localhost:9092
+    listener:
+      ack-mode: MANUAL_IMMEDIATE
+      type: RECORD
