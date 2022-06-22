@@ -1,5 +1,41 @@
 version: "3"
+
+networks:
+  kafka-net:
+    driver: bridge
+
 services:
+  zookeeper:
+    image: docker.io/bitnami/zookeeper:3.7
+    networks:
+      - kafka-net
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+#    volumes:
+#      - "zookeeper_data:/bitnami"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  kafka:
+    image: docker.io/bitnami/kafka:3
+    networks:
+      - kafka-net
+    container_name: kafka
+    ports:
+      - '9093:9093'
+#    volumes:
+#      - "kafka_data:/bitnami"
+    environment:
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
+      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
+    depends_on:
+      - zookeeper
+
   database:
     container_name: database
     image: mariadb
@@ -16,7 +52,7 @@ services:
     ports:
       - "3306:3306"
 
-  server:
+  spring:
     build: .
 #    image: backend
     container_name: server
@@ -26,6 +62,15 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 1234
     ports:
-      - "8080:8080"
+      - "8081:8081"
     depends_on:
       - database
+
+  client:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    restart: always
+    depends_on:
+      - server
