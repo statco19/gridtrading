@@ -1,9 +1,12 @@
 spring:
   datasource:
-    url: jdbc:mariadb://localhost:3306/database_name?useSSL=false
+    url: jdbc:mariadb://localhost:3306/test_db?useSSL=false
     username: root
     password: 1234
     driver-class-name: org.mariadb.jdbc.Driver
+
+server:
+  port: 8081
 
   jpa:
     hibernate:
@@ -23,4 +26,4 @@ spring:
       bootstrap-servers: localhost:9092
     listener:
       ack-mode: MANUAL_IMMEDIATE
-      type: RECORD
+      type: BATCH
