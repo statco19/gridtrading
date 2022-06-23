@@ -201,8 +201,6 @@ public class UtilServiceImpl implements UtilService{
         }
 
         return null;
-
-        return 0f;
     }
 
     @Override

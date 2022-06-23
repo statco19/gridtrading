@@ -24,6 +24,9 @@ public class Order {
     @Column(name = "SIDE")
     private String side;
 
+    @Column(name = "IS_DONE")
+    private Integer isDone;
+
 //    @Column(name = "CREATED_AT")
 //    private LocalDateTime created_at;
 //

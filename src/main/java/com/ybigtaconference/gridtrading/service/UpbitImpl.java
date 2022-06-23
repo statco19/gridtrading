@@ -47,7 +47,7 @@ public class UpbitImpl implements Upbit {
     }
 
     @Override
-    public HttpEntity get_balance() {
+    public String get_balance() {
         log.info("accessKey {}", accessKey);
         log.info("secretKye {}", secretKey);
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
@@ -59,7 +59,7 @@ public class UpbitImpl implements Upbit {
 
         String authenticationToken = "Bearer " + jwtToken;
         //
-        HttpEntity entity;
+        String res;
         try {
 //                HttpClient client = HttpClientBuilder.create().build();
                 CloseableHttpClient client = HttpClientBuilder.create().build();
@@ -70,7 +70,13 @@ public class UpbitImpl implements Upbit {
 //                HttpResponse response = client.execute(request);
                 CloseableHttpResponse response = client.execute(request);
                 //
-                entity = response.getEntity();
+                HttpEntity entity = response.getEntity();
+
+                res = EntityUtils.toString(entity, "UTF-8");
+
+
+//                System.out.println(EntityUtils.toString(entity, "UTF-8"));
+                log.info("commit_order {}", res);
 
 //                System.out.println(EntityUtils.toString(entity, "UTF-8"));
                 log.info("get_balance {}", EntityUtils.toString(entity, "UTF-8"));
@@ -79,16 +85,67 @@ public class UpbitImpl implements Upbit {
                 return null;
             }
 
-        return entity;
+        return res;
     }
 
     @Override
-    public HttpEntity get_order(String ticker) {
-        return null;
+    public String get_order(String ticker) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("market", ticker);
+        params.put("state", "wait");
+        params.put("page", "1");
+        params.put("limit", "100");
+        params.put("order_by", "desc");
+
+        ArrayList<String> queryElements = new ArrayList<>();
+        for(Map.Entry<String, String> entity : params.entrySet()) {
+            queryElements.add(entity.getKey() + "=" + entity.getValue());
+        }
+
+        String queryString = String.join("&", queryElements.toArray(new String[0]));
+
+        MessageDigest md = MessageDigest.getInstance("SHA-512");
+        md.update(queryString.getBytes("UTF-8"));
+
+        String queryHash = String.format("%0128x", new BigInteger(1, md.digest()));
+
+        Algorithm algorithm = Algorithm.HMAC256(secretKey);
+        String jwtToken = JWT.create()
+                .withClaim("access_key", accessKey)
+                .withClaim("nonce", UUID.randomUUID().toString())
+                .withClaim("query_hash", queryHash)
+                .withClaim("query_hash_alg", "SHA512")
+                .sign(algorithm);
+
+        String authenticationToken = "Bearer " + jwtToken;
+
+        String res;
+        try {
+            HttpClient client = HttpClientBuilder.create().build();
+            HttpGet request = new HttpGet(serverUrl + "/v1/orders?" + queryString);
+            request.setHeader("Content-Type", "application/json");
+            request.addHeader("Authorization", authenticationToken);
+
+            HttpResponse response = client.execute(request);
+            HttpEntity entity = response.getEntity();
+
+            res = EntityUtils.toString(entity, "UTF-8");
+
+
+//          System.out.println(EntityUtils.toString(entity, "UTF-8"));
+            log.info("commit_order {}", res);
+
+            System.out.println(EntityUtils.toString(entity, "UTF-8"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return res;
     }
 
     @Override
-    public HttpEntity cancel_order(String uuid) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public String cancel_order(String uuid) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         HashMap<String, String> params = new HashMap<>();
         params.put("uuid", uuid);
 
@@ -114,7 +171,7 @@ public class UpbitImpl implements Upbit {
 
         String authenticationToken = "Bearer " + jwtToken;
         //
-        HttpEntity entity;
+        String res;
         try {
                 HttpClient client = HttpClientBuilder.create().build();
                 HttpDelete request = new HttpDelete(serverUrl + "/v1/order?" + queryString);
@@ -122,7 +179,13 @@ public class UpbitImpl implements Upbit {
                 request.addHeader("Authorization", authenticationToken);
 
                 HttpResponse response = client.execute(request);
-                entity = response.getEntity();
+                HttpEntity entity = response.getEntity();
+
+                res = EntityUtils.toString(entity, "UTF-8");
+
+
+//                System.out.println(EntityUtils.toString(entity, "UTF-8"));
+                log.info("commit_order {}", res);
 
 //                System.out.println(EntityUtils.toString(entity, "UTF-8"));
                 log.info("cancel_order {}", EntityUtils.toString(entity, "UTF-8"));
@@ -131,7 +194,7 @@ public class UpbitImpl implements Upbit {
                 return null;
             }
 
-        return entity;
+        return res;
     }
 
     @Override
