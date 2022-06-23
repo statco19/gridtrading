@@ -9,10 +9,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,22 +48,27 @@ public class UpbitImpl implements Upbit {
 
     @Override
     public HttpEntity get_balance() {
+        log.info("accessKey {}", accessKey);
+        log.info("secretKye {}", secretKey);
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
         String jwtToken = JWT.create()
                 .withClaim("access_key", accessKey)
                 .withClaim("nonce", UUID.randomUUID().toString())
                 .sign(algorithm);
 
+
         String authenticationToken = "Bearer " + jwtToken;
         //
         HttpEntity entity;
         try {
-                HttpClient client = HttpClientBuilder.create().build();
+//                HttpClient client = HttpClientBuilder.create().build();
+                CloseableHttpClient client = HttpClientBuilder.create().build();
                 HttpGet request = new HttpGet(serverUrl + "/v1/accounts");
                 request.setHeader("Content-Type", "application/json");
                 request.addHeader("Authorization", authenticationToken);
 
-                HttpResponse response = client.execute(request);
+//                HttpResponse response = client.execute(request);
+                CloseableHttpResponse response = client.execute(request);
                 //
                 entity = response.getEntity();
 
@@ -128,7 +135,7 @@ public class UpbitImpl implements Upbit {
     }
 
     @Override
-    public HttpEntity order(String ticker, Float price, Float volume, String side, String ord_type) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public String order(String ticker, Float price, Float volume, String side, String ord_type) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         HashMap<String, String> params = new HashMap<>();
         params.put("market", ticker);
         params.put("side", side);
@@ -158,7 +165,7 @@ public class UpbitImpl implements Upbit {
 
         String authenticationToken = "Bearer " + jwtToken;
         //
-        HttpEntity entity;
+        String res;
         try {
                 HttpClient client = HttpClientBuilder.create().build();
                 HttpPost request = new HttpPost(serverUrl + "/v1/orders");
@@ -167,15 +174,17 @@ public class UpbitImpl implements Upbit {
                 request.setEntity(new StringEntity(new Gson().toJson(params)));
 
                 HttpResponse response = client.execute(request);
-                entity = response.getEntity();
+                HttpEntity entity = response.getEntity();
+                res = EntityUtils.toString(entity, "UTF-8");
+
 
 //                System.out.println(EntityUtils.toString(entity, "UTF-8"));
-                log.info("commit_order {}", EntityUtils.toString(entity, "UTF-8"));
+                log.info("commit_order {}", res);
             } catch (IOException e) {
                 e.printStackTrace();
-                return null;
+                return "error";
             }
 
-        return entity;
+        return res;
     }
 }

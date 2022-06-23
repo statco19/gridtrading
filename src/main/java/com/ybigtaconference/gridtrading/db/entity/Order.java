@@ -16,13 +16,13 @@ public class Order {
     private Long id;
 
     @Column(name = "PRICE")
-    private Integer price;
+    private Double price;
 
     @Column(name = "VOLUME")
     private Double volume;
 
-    @Column(name = "MARKET")
-    private String market;
+    @Column(name = "SIDE")
+    private String side;
 
 //    @Column(name = "CREATED_AT")
 //    private LocalDateTime created_at;
@@ -33,9 +33,9 @@ public class Order {
     public Order() {
     }
 
-    public Order(Integer price, Double volume, String market) {
+    public Order(Double price, Double volume, String side) {
         this.price = price;
         this.volume = volume;
-        this.market = market;
+        this.side = side;
     }
 }
