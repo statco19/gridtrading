@@ -104,6 +104,7 @@ def get_std(coin, interval, std_num):
     response = requests.get(url, headers=headers)
     
     price_list = []
+
     for x in response.json():
         price_list.append(x["trade_price"])
 
