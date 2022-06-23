@@ -32,4 +32,10 @@ public class Order {
 
     public Order() {
     }
+
+    public Order(Integer price, Double volume, String market) {
+        this.price = price;
+        this.volume = volume;
+        this.market = market;
+    }
 }

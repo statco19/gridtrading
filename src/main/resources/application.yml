@@ -1,6 +1,13 @@
 spring:
   kafka:
     bootstrap-servers: kafka:9092
+    producer:
+      bootstrap-servers: kafka:9092
+    consumer:
+      bootstrap-servers: kafka:9092
+    streams:
+      application-id: streams-filter-application
+      bootstrap-servers: kafka:9092
 
   datasource:
     url: jdbc:mariadb://database:3306/database_name?useSSL=false

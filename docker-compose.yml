@@ -51,6 +51,8 @@ services:
     command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
     ports:
       - "3306:3306"
+    networks:
+      - kafka-net
 
   server:
     build: .
@@ -62,9 +64,13 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: 1234
     ports:
-      - "8081:8081"
+      - "8080:8080"
     depends_on:
       - database
+      - zookeeper
+      - kafka
+    networks:
+      - kafka-net
 
   client:
     build: ./frontend
@@ -74,3 +80,5 @@ services:
     restart: always
     depends_on:
       - server
+    networks:
+      - kafka-net
