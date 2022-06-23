@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 
 @Controller
@@ -45,5 +46,11 @@ public class BasicController {
     @ResponseBody
     public String candle() throws IOException {
         return orderService.getCandle();
+    }
+
+    @PostConstruct
+    public void init() {
+        orderService.saveOrder(new Order(25000000, 0.002, "buy"));
+        orderService.saveOrder(new Order(26000000, 0.004, "buy"));
     }
 }

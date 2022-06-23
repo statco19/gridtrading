@@ -15,6 +15,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -34,6 +35,9 @@ public class UpbitImpl implements Upbit {
 
     private String accessKey,secretKey;
     private static final String serverUrl = "https://api.upbit.com";
+
+    public UpbitImpl() {
+    }
 
     public UpbitImpl(String accessKey, String secretKey) {
         this.accessKey = accessKey;
