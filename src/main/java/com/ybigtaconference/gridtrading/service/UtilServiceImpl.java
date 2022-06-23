@@ -1,6 +1,7 @@
 package com.ybigtaconference.gridtrading.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -143,7 +144,7 @@ public class UtilServiceImpl implements UtilService{
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url("https://api.upbit.com/v1/candles/minutes/1?market=KRW-BTC&count=1")
+                .url("https://api.upbit.com/v1/candles/minutes/"+interval.toString()+"?market=KRW-"+coin+"&count="+stdNum.toString())
                 .get()
                 .addHeader("Accept", "application/json")
                 .build();
