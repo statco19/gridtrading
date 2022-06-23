@@ -163,12 +163,25 @@ public class UtilServiceImpl implements UtilService{
     }
 
     @Override
-    public List<Float> get_boundary(Float current, Float std, Float lowerStd) {
-        return null;
+    public ArrayList<Float> get_boundary(Float current, Float std, Float lowerStd) throws IllegalArgumentException {
+        Float upper = current;
+        Float lower = current - lowerStd*std;
+        if (current < upper){
+            throw new IllegalArgumentException("상한선은 현재가보다 낮아야합니다.");
+        }
+        ArrayList<Float> boundary = new ArrayList<Float>();
+        boundary.add(upper);
+        boundary.add(lower);
+        return boundary;
     }
 
     @Override
-    public Float get_volume(Float current, Float budget, Integer grids) {
-        return null;
+    public Float get_volume(Float current, Float budget, Integer grids) throws IllegalArgumentException {
+        double volume = Math.floor((budget / grids)/current*1e8)/1e8;
+        if (volume * current < 5000){
+            throw new IllegalArgumentException("최소 주문 단위보다 작습니다. "+(volume * current)%.2f+"원");
+        }
+        return (float)volume;
     }
 }
+
