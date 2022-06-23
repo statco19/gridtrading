@@ -1,18 +1,12 @@
 package com.ybigtaconference.gridtrading.controller;
 
-import com.ybigtaconference.gridtrading.db.entity.Order;
 import com.ybigtaconference.gridtrading.domain.UserInput;
 import com.ybigtaconference.gridtrading.producer.KafkaProducer;
 import com.ybigtaconference.gridtrading.service.OrderService;
 import com.ybigtaconference.gridtrading.service.UpbitImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpEntity;
-import org.apache.http.util.EntityUtils;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 
 @Slf4j
 @RestController
@@ -41,7 +35,7 @@ public class KafkaController {
         upbit.setAccessKey(userInput.getAccessKey());
         upbit.setSecretKey(userInput.getSecretKey());
 
-        upbit.get_balance();
+        upbit.get_balances();
 
         return "UserInput accepted.";
     }

@@ -3,9 +3,15 @@ package com.ybigtaconference.gridtrading.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -37,6 +43,7 @@ public class UpbitImpl implements Upbit {
 
     private String accessKey,secretKey;
     private static final String serverUrl = "https://api.upbit.com";
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public UpbitImpl() {
     }
@@ -47,7 +54,7 @@ public class UpbitImpl implements Upbit {
     }
 
     @Override
-    public String get_balance() {
+    public String get_balances() {
         log.info("accessKey {}", accessKey);
         log.info("secretKye {}", secretKey);
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
@@ -86,6 +93,24 @@ public class UpbitImpl implements Upbit {
             }
 
         return res;
+    }
+
+    @Override
+    public String get_balance(String coin) {
+        try {
+            String balances = this.get_balances();
+            JsonArray jsonArray = gson.fromJson(balances, JsonArray.class).getAsJsonArray();
+            for (JsonElement jsonElement : jsonArray) {
+                String currency = jsonElement.getAsJsonObject().get("currency").getAsString();
+                if (currency.equals(coin)) {
+                    String volume = jsonElement.getAsJsonObject().get("balance").getAsString();
+                    return volume;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
@@ -130,7 +155,6 @@ public class UpbitImpl implements Upbit {
             HttpEntity entity = response.getEntity();
 
             res = EntityUtils.toString(entity, "UTF-8");
-
 
 //          System.out.println(EntityUtils.toString(entity, "UTF-8"));
             log.info("commit_order {}", res);
@@ -202,8 +226,10 @@ public class UpbitImpl implements Upbit {
         params.put("market", ticker);
         params.put("side", side);
         params.put("volume", volume.toString());
-        params.put("price", price.toString());
         params.put("ord_type", ord_type);
+        if(ord_type.equals("market")) {
+            params.put("price", price.toString());
+        }
 
         ArrayList<String> queryElements = new ArrayList<>();
         for(Map.Entry<String, String> entity : params.entrySet()) {
@@ -248,5 +274,26 @@ public class UpbitImpl implements Upbit {
             }
 
         return res;
+    }
+
+    @Override
+    public String get_current_price(String ticker) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+
+        try {
+            Request request = new Request.Builder()
+                    .url("https://api.upbit.com/v1/trades/ticks?count=1")
+                    .get()
+                    .addHeader("Accept", "application/json")
+                    .build();
+
+            Response response = client.newCall(request).execute();
+            String str = response.body().string();
+            String trade_price = gson.fromJson(str, JsonArray.class).getAsJsonObject().get("trade_price").getAsString();
+            return trade_price;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
