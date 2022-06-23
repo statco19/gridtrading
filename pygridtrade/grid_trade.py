@@ -1,4 +1,3 @@
-import numpy as np
 import math
 import time
 import requests
@@ -107,8 +106,12 @@ def get_std(coin, interval, std_num):
     price_list = []
     for x in response.json():
         price_list.append(x["trade_price"])
-        
-    return np.std(price_list)
+
+    n = len(price_list)
+    m = sum(price_list) / n
+    ss = sum((x-m)**2 for x in price_list)
+    pvar = ss/n
+    return pvar**0.5
 
 # 상한선 하한선 계산
 def get_boundary(current, std, lower_std):
@@ -124,6 +127,14 @@ def get_volume(current, budget, grids):
     if volume * current < 5000: # 최소 주문 단위 5000보다 작을 경우 error
         raise Exception(f"최소 주문 단위보다 작습니다. {volume * current:.2f}원")
     return volume
+
+# 현재가 정보 조회
+def get_current_price(ticker="KRW-BTC"):
+    url = f"https://api.upbit.com/v1/trades/ticks?market={ticker}&count=1"
+    headers = {"Accept": "application/json"}
+    response = requests.get(url, headers=headers)
+    price = response.json()[0]["trade_price"]
+    return price
 
 class trading_bot:
     def __init__(self, key_path):
@@ -155,8 +166,8 @@ class trading_bot:
             
     # 코인 보유량 모두 시장가 매도
     def sell_all_market(self, coin):
-        share = self.upbit.get_balance(coin)
-        ret_stoploss = self.upbit.sell_market_order(f"KRW-{coin}", share)
+        volume = self.upbit.get_balance(coin)
+        ret_stoploss = self.upbit.sell_market_order(f"KRW-{coin}", volume)
         # 에러 발생시 message 출력
         if 'error' in ret_stoploss.keys():
             print(ret_stoploss['error']['message'])
@@ -200,7 +211,7 @@ class trading_bot:
             globals()[key] = value
 
         # 현재가 조회
-        current = pyupbit.get_current_price(f"KRW-{COIN}")
+        current = get_current_price(f"KRW-{COIN}")
 
         # 잔고 조회
         balance_KRW = self.upbit.get_balance("KRW")
@@ -268,7 +279,7 @@ class trading_bot:
         while True:
             time.sleep(0.5) # 0.5초마다 업데이트
             
-            current = pyupbit.get_current_price(f"KRW-{COIN}") # 현재 코인 가격
+            current = get_current_price(f"KRW-{COIN}") # 현재 코인 가격
             avg_price = self.get_avg(COIN) # 현재 평단가 가져오기
             
             
@@ -312,7 +323,7 @@ class trading_bot:
             now_open = len(self.upbit.get_order(f"KRW-{COIN}")) # 현재 미체결 주문수
             if GRIDS != now_open:
                 balance_coin = self.upbit.get_balance(COIN) # 코인 보유량으로 매수 매도 판단
-                last_price = pyupbit.get_current_price(f"KRW-{COIN}") # 최근 체결 가격
+                last_price = get_current_price(f"KRW-{COIN}") # 최근 체결 가격
                 
                 if balance_coin != 0: # 보유량이 0이 아니면 최근 체결은 매수
                     side = "bid"
