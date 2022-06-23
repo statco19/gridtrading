@@ -20,6 +20,11 @@ public class KafkaController {
         return "success";
     }
 
+    @PostMapping
+    public String get_balance(@RequestBody UserInput userInput) {
+        
+    }
+
 //    @PostMapping
 //    public String saveOrder(@RequestBody Order order) {
 //        orderService.saveOrder(order);
