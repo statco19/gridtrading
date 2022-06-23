@@ -135,7 +135,7 @@ public class UpbitImpl implements Upbit {
 //          System.out.println(EntityUtils.toString(entity, "UTF-8"));
             log.info("commit_order {}", res);
 
-            System.out.println(EntityUtils.toString(entity, "UTF-8"));
+//            System.out.println(EntityUtils.toString(entity, "UTF-8"));
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -185,10 +185,9 @@ public class UpbitImpl implements Upbit {
 
 
 //                System.out.println(EntityUtils.toString(entity, "UTF-8"));
-                log.info("commit_order {}", res);
+                log.info("cancel_order {}", res);
 
 //                System.out.println(EntityUtils.toString(entity, "UTF-8"));
-                log.info("cancel_order {}", EntityUtils.toString(entity, "UTF-8"));
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
