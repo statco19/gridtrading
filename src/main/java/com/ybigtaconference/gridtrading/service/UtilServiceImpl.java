@@ -1,11 +1,18 @@
 package com.ybigtaconference.gridtrading.service;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+
 import lombok.RequiredArgsConstructor;
+import okhttp3.ResponseBody;
 import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -135,6 +142,7 @@ public class UtilServiceImpl implements UtilService{
         levels.add(diff);
         return levels;
     }
+    static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @Override
     public Float get_std(String coin, Integer interval, Integer stdNum) {
@@ -143,22 +151,56 @@ public class UtilServiceImpl implements UtilService{
 
         OkHttpClient client = new OkHttpClient();
 
+
         Request request = new Request.Builder()
                 .url("https://api.upbit.com/v1/candles/minutes/"+interval.toString()+"?market=KRW-"+coin+"&count="+stdNum.toString())
+                //.url("https://api.upbit.com/v1/market/all?isDetails=false")
                 .get()
                 .addHeader("Accept", "application/json")
                 .build();
+
         try{
             Response response = client.newCall(request).execute();
+            //JSONObject jsonobj = new JSONObject(response.body().string());
+            ResponseBody body = response.body();
+            String str = body.string();
+//            System.out.println("body = " + body.string());
+            for(int i=0; i<stdNum; i++){
+                Float trade_price = gson.fromJson(str, JsonArray.class)
+                        .get(i)
+                        .getAsJsonObject()
+                        .get("trade_price")
+                        .getAsFloat();
+//            System.out.println(response.body().string());
+//            System.out.println(res);
+                System.out.println(trade_price);
+                price_list.add(trade_price);
+            }
 
-//            for(int i=0; i<response.)
-            System.out.println(response);
+            int n = price_list.size();
+            float sum = 0;
+
+            for(float i: price_list){
+                sum += i;
+            }
+
+            float m = sum/n;
+            float ss = 0;
+
+            for(float i: price_list){
+                ss += Math.pow((i-m),2);
+            }
+
+            float pvar = ss / n;
+
+            return (float)Math.pow(pvar, 0.5);
 
         }catch(Exception e){
+            e.printStackTrace();
             System.out.println("response 실패");
-            return null;
         }
 
+        return null;
 
 
     }
