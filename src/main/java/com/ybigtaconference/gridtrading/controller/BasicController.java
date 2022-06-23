@@ -11,6 +11,7 @@ import java.io.IOException;
 @Controller
 @RequestMapping
 @RequiredArgsConstructor
+@CrossOrigin
 public class BasicController {
 
     private final OrderService orderService;
@@ -38,5 +39,11 @@ public class BasicController {
     @ResponseBody
     public String show2() throws IOException {
         return orderService.getCoinTradePrice("KRW-BTC");
+    }
+
+    @GetMapping("/candle")
+    @ResponseBody
+    public String candle() throws IOException {
+        return orderService.getCandle();
     }
 }

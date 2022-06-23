@@ -34,4 +34,18 @@ public class OrderServiceImpl implements OrderService{
         Response response = client.newCall(request).execute();
         return response.body().string();
     }
+
+    @Override
+    public String getCandle() throws IOException {
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("https://api.upbit.com/v1/candles/minutes/30?market=KRW-BTC&count=1")
+                .get()
+                .addHeader("Accept", "application/json")
+                .build();
+
+        Response response = client.newCall(request).execute();
+        return response.body().string();
+    }
 }

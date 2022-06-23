@@ -1,6 +1,17 @@
 spring:
+  kafka:
+    bootstrap-servers: kafka:9092
+    producer:
+      bootstrap-servers: kafka:9092
+    consumer:
+      bootstrap-servers: kafka:9092
+    streams:
+      application-id: streams-filter-application
+      bootstrap-servers: kafka:9092
+
   datasource:
-    url: jdbc:mariadb://localhost:3306/test_db?useSSL=false
+    url: jdbc:mariadb://database:3306/database_name?useSSL=false
+#    url: jdbc:mariadb://localhost:3306/database_name?useSSL=false
     username: root
     password: 1234
     driver-class-name: org.mariadb.jdbc.Driver
