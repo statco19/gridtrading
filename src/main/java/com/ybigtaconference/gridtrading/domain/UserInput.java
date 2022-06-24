@@ -9,12 +9,13 @@ public class UserInput {
     String secretKey;
     Double budget;
     Double stopLoss;
-    Integer gridNum, lower;
+    Double lower;
+    Integer gridNum;
 
     public UserInput() {
     }
 
-    public UserInput(String accessKey, String secretKey, Double budget, Double stopLoss, Integer gridNum, Integer lower) {
+    public UserInput(String accessKey, String secretKey, Double budget, Double stopLoss, Integer gridNum, Double lower) {
         this.accessKey = accessKey;
         this.secretKey = secretKey;
         this.budget = budget;

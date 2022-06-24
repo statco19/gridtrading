@@ -4,11 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.ybigtaconference.gridtrading.producer.KafkaProducer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -20,32 +23,50 @@ import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @Getter @Setter
 public class BotServiceImpl implements BotService {
 
-
-    private String accessKey,secretKey;
+    public String accessKey,secretKey;
     private static final String serverUrl = "https://api.upbit.com";
 
-    private UpbitImpl upbit;
-    private UtilService utilService;
+//    private UpbitImpl upbit;
+//    private UtilService utilService;
+////    private KafkaProducer producer;
+//
+//    @Autowired
+//    public KafkaTemplate<String,String> customKafkaTemplate = new KafkaTemplate<String,String>(
+//
+//    );
+
+    private final UpbitImpl upbit;
+    private final UtilService utilService;
+    private final KafkaProducer producer;
+
 //    private OrderService orderService;
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public BotServiceImpl(String accessKey, String secretKey) {
-        this.accessKey = accessKey;
-        this.secretKey = secretKey;
-        upbit = new UpbitImpl(this.accessKey, this.secretKey);
-        utilService = new UtilServiceImpl();
-
-    }
+//    public BotServiceImpl() {
+//
+//    }
+//
+//    public BotServiceImpl(String accessKey, String secretKey) {
+//        this.accessKey = accessKey;
+//        this.secretKey = secretKey;
+//        upbit = new UpbitImpl(this.accessKey, this.secretKey);
+//        utilService = new UtilServiceImpl();
+////        producer = new KafkaProducer(customKafkaTemplate);
+//    }
 
     @Override
     public void connect_upbit() {
         try {
+            upbit.setAccessKey(this.accessKey);
+            upbit.setSecretKey(this.secretKey);
+
             String balance = upbit.get_balances();
             log.info("연결 성공");
             log.info("balance {}", balance);
@@ -56,6 +77,9 @@ public class BotServiceImpl implements BotService {
 
     @Override
     public void cancel_all_order(String coin) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        upbit.setAccessKey(this.accessKey);
+        upbit.setSecretKey(this.secretKey);
+
         String orderList = upbit.get_order("KRW-" + coin);
         JsonArray jsonArray = gson.fromJson(orderList, JsonArray.class).getAsJsonArray();
 
@@ -73,6 +97,9 @@ public class BotServiceImpl implements BotService {
 
     @Override
     public void sell_all_market(String coin) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        upbit.setAccessKey(this.accessKey);
+        upbit.setSecretKey(this.secretKey);
+
         try {
             String volume = upbit.get_balance(coin);
             String stoploss = upbit.order("KRW-" + coin, null, Double.parseDouble(volume), "ask", "market");
@@ -83,6 +110,9 @@ public class BotServiceImpl implements BotService {
 
     @Override
     public Double get_avg(String coin) {
+        upbit.setAccessKey(this.accessKey);
+        upbit.setSecretKey(this.secretKey);
+
         try {
             String balances = upbit.get_balances();
             JsonArray jsonArray = gson.fromJson(balances, JsonArray.class).getAsJsonArray();
@@ -104,6 +134,9 @@ public class BotServiceImpl implements BotService {
         Map<String, List<Double>> map = new HashMap<>();
         List<Double> bid_list = new ArrayList<>();
         List<Double> ask_list = new ArrayList<>();
+
+        upbit.setAccessKey(this.accessKey);
+        upbit.setSecretKey(this.secretKey);
 
         try {
             String orders = upbit.get_order("KRW-" + coin);
@@ -132,6 +165,9 @@ public class BotServiceImpl implements BotService {
 
     @Override
     public void levels_order(String coin, Double volume, List<Double> levels) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        upbit.setAccessKey(this.accessKey);
+        upbit.setSecretKey(this.secretKey);
+
         try {
             for (Double price : levels) {
                 upbit.order("KRW-" + coin, price, volume, "bid", "limit");
@@ -204,15 +240,26 @@ public class BotServiceImpl implements BotService {
     }
 
     @Override
-    public void trade(Envr env) throws IOException, NoSuchAlgorithmException, InterruptedException {
+    public void trade(Envr env) throws Exception {
+        upbit.setAccessKey(this.accessKey);
+        upbit.setSecretKey(this.secretKey);
+
+        List<String> before_list = new ArrayList<>();
+        List<String> now_list = new ArrayList<>();
+
         // 전체 주문 취소
         this.cancel_all_order(env.getCoin());
         // 초기 매수 주문
         this.levels_order(env.getCoin(), env.getVolume(), env.getLevels());
-        log.info("{}", this.get_open_price(env.getCoin()));
+        String firstOrders = upbit.get_order("KRW-" + env.getCoin());
+        JsonArray first_open = gson.fromJson(firstOrders, JsonArray.class).getAsJsonArray();
 
-        List<String> before_list = new ArrayList<>();
-        List<String> now_list = new ArrayList<>();
+
+        log.info("{}", this.get_open_price(env.getCoin()));
+        for(JsonElement jsonElement : first_open) {
+            before_list.add(jsonElement.toString());
+            producer.send(jsonElement.toString());
+        }
 
         while(true) {
             Thread.sleep(500);
@@ -246,7 +293,7 @@ public class BotServiceImpl implements BotService {
             if(!Objects.equals(env.getGrids(), now_open.size())) {
                 now_list = new ArrayList<>();
                 for(JsonElement jsonElement : now_open) {
-                    now_list.add(jsonElement.getAsString());
+                    now_list.add(jsonElement.toString());
                 }
 
                 String doneOrder = "";
@@ -257,10 +304,18 @@ public class BotServiceImpl implements BotService {
                     }
                 }
 
-                // producer.send(doneOrder)
-                log.info("doneOrder {} ", doneOrder);
+                // producer
+                producer.send(doneOrder);
 
-                Double balance_coin = Double.parseDouble(upbit.get_balance(env.getCoin()));
+                log.info("doneOrder {} ", doneOrder);
+                Double balance_coin = 0.;
+
+                try {
+                    balance_coin = Double.parseDouble(upbit.get_balance(env.getCoin()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    balance_coin = 0.;
+                }
                 Double last_price = Double.parseDouble(upbit.get_current_price("KRW-" + env.getCoin()));
 
                 String ret = "";
@@ -273,6 +328,7 @@ public class BotServiceImpl implements BotService {
                     } else {
                         price = last_price * env.getDiff();
                     }
+                    ret = upbit.order("KRW-" + env.getCoin(), price, env.getVolume(), "ask", "limit");
                 } else {
                     side = "ask";
                     if(env.getMode().equals("Arithmetic")) {
@@ -281,9 +337,10 @@ public class BotServiceImpl implements BotService {
                         price = last_price / env.getDiff();
                     }
 
+                    ret = upbit.order("KRW-" + env.getCoin(), price, env.getVolume(), "bid", "limit");
+
                 }
                 price = utilService.get_tick_size(price, "floor");
-                ret = upbit.order("KRW-" + env.getCoin(), price, env.getVolume(), "ask", "limit");
 
                 if(ret.contains("error")) {
                     log.info("trade error");
@@ -296,8 +353,9 @@ public class BotServiceImpl implements BotService {
                     log.info("{}", this.get_open_price(env.getCoin()));
                 }
             } else {
+                before_list = new ArrayList<>();
                 for(JsonElement jsonElement : now_open) {
-                    before_list.add(jsonElement.getAsString());
+                    before_list.add(jsonElement.toString());
                 }
             }
 

@@ -18,16 +18,16 @@ export async function test(formData) {
 
 export async function startTrading(formData) {
   console.log("테스트트레이딩");
-  // const BASE_URL = "";
-  // const response = await fetch(`${BASE_URL}`, {
-  //   method: "POST",
-  //   body: formData,
-  // });
-  // if (!response.ok) {
-  //   throw new Error("데이터를 생성하는데 실패했습니다");
-  // }
-  // const body = await response.json();
-  // return body;
+  const BASE_URL = "localhost:8080/kafka/grid-trading";
+  const response = await fetch(`${BASE_URL}`, {
+    method: "POST",
+    body: formData,
+  });
+  if (!response.ok) {
+    throw new Error("데이터를 생성하는데 실패했습니다");
+  }
+  const body = await response.json();
+  return body;
 }
 
 export async function ChartDraw() {
