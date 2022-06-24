@@ -1,0 +1,101 @@
+.LimitForm {
+  color: white;
+  font-size: 16px;
+  display: flex;
+  width: 100%;
+}
+.LimitForm .LimitForm-columns .LimitForm-rows {
+  flex: 1 1;
+}
+.LimitForm-columns {
+  flex-direction: column;
+  display: flex;
+  padding: 10px;
+  width: 100%;
+}
+
+.LimitForm-rows {
+  margin-left: 27px;
+  margin-bottom: 40px;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.LimitForm-rows .LimitForm-lower {
+  background-color: transparent;
+  height: 35px;
+  margin-left: 40px;
+  margin-bottom: 30px;
+  align-items: center;
+}
+
+.LimitForm-lower {
+  border: solid 2px #fff;
+  border-radius: 20px;
+  float: right;
+  justify-content: flex-end;
+}
+
+.LimitForm-rows .LimitForm-budget {
+  background-color: transparent;
+  height: 35px;
+  margin-left: 40px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.LimitForm-budget {
+  border: solid 2px #fff;
+  border-radius: 22px;
+}
+
+.LimitForm-rows .LimitForm-accessKey {
+  background-color: transparent;
+  height: 35px;
+  margin-left: 40px;
+  margin-bottom: 20px;
+  align-items: center;
+  flex: right;
+}
+
+.LimitForm-accessKey,
+.LimitForm-secretKey,
+.LimitForm-lower,
+.LimitForm-budget {
+  border: solid 1px #babac4;
+  border-radius: 4px;
+  right: 100px;
+  position: absolute;
+  color: #babac4;
+  font-size: 15px;
+}
+
+.LimitForm-rows .LimitForm-secretKey {
+  background-color: transparent;
+  height: 35px;
+  margin-left: 40px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+label {
+  margin-top: 12px;
+  color: #e1e1e6;
+}
+
+.LimitForm-submit-button {
+  min-width: 120px;
+  padding: 14px 27px;
+  border-radius: 7px;
+  outline: none;
+  font-size: 25px;
+  font-family: "NanumSquareRoundEB";
+  font-weight: 1;
+  cursor: pointer;
+  margin-top: 50px;
+  opacity: 75%;
+  background-color: #212126;
+  border: 1px solid #858995;
+  color: #d3d3e5;
+}

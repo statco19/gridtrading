@@ -1,0 +1,19 @@
+.Button {
+  min-width: 120px;
+  padding: 14px 27px;
+  border-radius: 9999px;
+  outline: none;
+  font-size: 25px;
+  font-family: "NanumSquareRoundEB";
+  cursor: pointer;
+}
+
+.Button.start {
+  border: 2px solid #fbf27c;
+  color: #fbf27c;
+  background-color: rgba(242, 255, 159, 0.2);
+}
+
+.Button.start:hover {
+  background-color: rgba(162, 171, 105, 0.2);
+}

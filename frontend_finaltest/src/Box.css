@@ -1,0 +1,48 @@
+.Content,
+.Content-inner {
+  border-radius: 3px;
+}
+
+.Content {
+  padding: 5px;
+  box-shadow: 0 3px 8px;
+  justify-content: center;
+  display: flex;
+}
+
+.Content-inner {
+  width: 99%;
+  max-width: 525px;
+  max-height: 500px;
+}
+
+.LimitForm {
+  margin: 30px 0 20px;
+  width: 100%;
+}
+
+.Box {
+  padding: 40px;
+  position: relative;
+  min-width: 395px;
+  max-width: 500px;
+  max-height: 600px;
+  border: 1px solid transparent;
+  border-radius: 40px;
+  text-align: center;
+}
+
+.Box-heading {
+  margin: 0 0 14px;
+  color: #e1e1e6;
+  font-weight: 1;
+  font-size: 26px;
+  text-align: center;
+  text-shadow: 0 3px 0 #36353c;
+  letter-spacing: 0.19px;
+  -webkit-text-stroke: 1px #fff;
+}
+
+.App-box {
+  margin: 26px 0 23px;
+}

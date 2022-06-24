@@ -1,0 +1,91 @@
+.App {
+  width: 97%;
+  text-align: center;
+  margin: 30px auto auto;
+  padding: 30px auto;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.App .App-title {
+  font-size: 35px;
+  color: #fff;
+  align-items: center;
+  justify-content: center;
+}
+.Container {
+  margin-top: 50px;
+  display: flex;
+  width: 100%;
+}
+
+.Container:after {
+  clear: both;
+  display: block;
+  content: "";
+}
+
+.Container .Column-left {
+  color: white;
+  border-right: 1px solid #ddd;
+  justify-content: center;
+}
+
+.Container .Column-right {
+  text-align: center;
+  justify-content: center;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.Column-left {
+  width: 50%;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  display: inline-block;
+}
+
+.Column-right {
+  width: 50%;
+  text-align: center;
+  display: flex;
+}
+
+.Column-left-name {
+  font-size: 25px;
+}
+
+div {
+  text-align: center;
+}
