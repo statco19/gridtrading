@@ -30,11 +30,18 @@ public class Order {
     @Column(name = "SIDE")
     private String side;
 
-    @Column(name = "CREATED_AT")
-    private LocalDateTime created_at;
+//    @Column(name = "CREATED_AT")
+//    private LocalDateTime created_at;
 
 
     public Order() {
     }
 
+    public Order(String uuid, Double order_price, Double trade_price, Double volume, String side) {
+        this.uuid = uuid;
+        this.order_price = order_price;
+        this.trade_price = trade_price;
+        this.volume = volume;
+        this.side = side;
+    }
 }

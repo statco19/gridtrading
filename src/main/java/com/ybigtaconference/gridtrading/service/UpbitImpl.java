@@ -45,13 +45,13 @@ public class UpbitImpl implements Upbit {
     private static final String serverUrl = "https://api.upbit.com";
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public UpbitImpl() {
-    }
-
-    public UpbitImpl(String accessKey, String secretKey) {
-        this.accessKey = accessKey;
-        this.secretKey = secretKey;
-    }
+//    public UpbitImpl() {
+//    }
+//
+//    public UpbitImpl(String accessKey, String secretKey) {
+//        this.accessKey = accessKey;
+//        this.secretKey = secretKey;
+//    }
 
     @Override
     public String get_balances() {

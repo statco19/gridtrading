@@ -1,13 +1,12 @@
 package com.ybigtaconference.gridtrading.service;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
 
-public interface botService {
-    public void connect_upbit(String keyPath);
+public interface BotService {
+    public void connect_upbit();
     public void cancel_all_order(String coin) throws UnsupportedEncodingException, NoSuchAlgorithmException;
     public void sell_all_market(String coin) throws UnsupportedEncodingException, NoSuchAlgorithmException;
     public Float get_avg(String coin);
