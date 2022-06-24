@@ -2,9 +2,7 @@ package com.ybigtaconference.gridtrading.controller;
 
 import com.ybigtaconference.gridtrading.domain.UserInput;
 import com.ybigtaconference.gridtrading.producer.KafkaProducer;
-import com.ybigtaconference.gridtrading.service.BotServiceImpl;
-import com.ybigtaconference.gridtrading.service.OrderService;
-import com.ybigtaconference.gridtrading.service.UpbitImpl;
+import com.ybigtaconference.gridtrading.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -13,11 +11,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/kafka")
+@CrossOrigin
 public class KafkaController {
 
     private final KafkaProducer producer;
     private final OrderService orderService;
     private final UpbitImpl upbit;
+    private final UtilService utilService;
     private final BotServiceImpl botService;
 
     @PostMapping
@@ -67,4 +67,33 @@ public class KafkaController {
 //        orderService.saveOrder(order);
 //        return "new order saved.";
 //    }
+
+    @PostMapping("/grid-trading")
+    public String gridTrading(@RequestBody UserInput userInput) throws Exception {
+//        BotServiceImpl botService = new BotServiceImpl(userInput.getAccessKey(), userInput.getSecretKey());
+        botService.setAccessKey(userInput.getAccessKey());
+        botService.setSecretKey(userInput.getSecretKey());
+
+//        botService.setAccessKey(userInput.getAccessKey());
+//        botService.setSecretKey(userInput.getSecretKey());
+
+        Params params = new Params();
+        params.setMode("Arithmetic");
+        params.setCoin("BTC");
+        params.setGrids(userInput.getGridNum());
+        params.setBudget(userInput.getBudget());
+        params.setLower(userInput.getLower());
+        params.setStop_loss(userInput.getStopLoss());
+
+        Envr env;
+        try {
+            env = botService.set_env(params);
+            botService.trade(env);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "trading on process";
+    }
+
 }

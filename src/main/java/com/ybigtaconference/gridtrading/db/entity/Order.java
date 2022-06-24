@@ -19,13 +19,13 @@ public class Order {
     private String uuid;
 
     @Column(name = "ORDER_PRICE")
-    private Double order_price;
+    private String order_price;
 
     @Column(name = "TRADE_PRICE")
-    private Double trade_price;  // -1:cancel, 0:wait >0: done
+    private String trade_price;  // -1:cancel, 0:wait >0: done
 
     @Column(name = "VOLUME")
-    private Double volume;
+    private String volume;
 
     @Column(name = "SIDE")
     private String side;
@@ -37,7 +37,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(String uuid, Double order_price, Double trade_price, Double volume, String side) {
+    public Order(String uuid, String order_price, String trade_price, String volume, String side) {
         this.uuid = uuid;
         this.order_price = order_price;
         this.trade_price = trade_price;

@@ -11,6 +11,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 @Slf4j
 @Service
@@ -32,7 +33,7 @@ public class KafkaConsumer {
                     .get("uuid")
                     .getAsString();
 
-            String order_price = gson.fromJson(message, JsonElement.class)
+            String price = gson.fromJson(message, JsonElement.class)
                     .getAsJsonObject()
                     .get("price")
                     .getAsString();
@@ -47,19 +48,26 @@ public class KafkaConsumer {
                     .get("side")
                     .getAsString();
 
-//            String status =
+            String state = gson.fromJson(message, JsonElement.class)
+                    .getAsJsonObject()
+                    .get("state")
+                    .getAsString();
 
-            Order order = new Order(
-                    uuid,
-                    Double.parseDouble(order_price),
-                    0.0,
-                    Double.parseDouble(volume),
-                    side); // price, volume, market
 
-            // gson library json parsing code
+            if(state.equals("wait")) {
+                if(orderService.findOrderByUuid(uuid) == null) {
+                    Order order = new Order(
+                            uuid,
+                            price,
+                            "0.0",
+                            volume,
+                            side); // price, volume, market
 
-            orderService.saveOrder(order);
-
+                    orderService.saveOrder(order);
+                }
+            } else if (state.equals("done")) {
+               orderService.modify_trade_price(uuid, price);
+            }
 
         } catch (Exception e) {
             log.info("error at Kafka Consumer");

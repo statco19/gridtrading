@@ -14,6 +14,6 @@ public interface BotService {
     public Map<String, List<Double>> get_open_price(String coin) throws UnsupportedEncodingException, NoSuchAlgorithmException;
     public void levels_order(String coin, Double volume, List<Double> levels) throws UnsupportedEncodingException, NoSuchAlgorithmException;
     public Envr set_env(Params params) throws Exception;
-    public void trade(Envr env) throws IOException, NoSuchAlgorithmException, InterruptedException;
+    public void trade(Envr env) throws Exception;
 
 }
