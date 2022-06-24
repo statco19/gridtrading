@@ -27,7 +27,12 @@ public class KafkaConsumer {
         System.out.println(String.format("Consumed message : %s", message));
 
         try {
-            String trade_price = gson.fromJson(message, JsonElement.class)
+            String uuid = gson.fromJson(message, JsonElement.class)
+                    .getAsJsonObject()
+                    .get("uuid")
+                    .getAsString();
+
+            String order_price = gson.fromJson(message, JsonElement.class)
                     .getAsJsonObject()
                     .get("price")
                     .getAsString();
@@ -42,6 +47,7 @@ public class KafkaConsumer {
                     .get("side")
                     .getAsString();
 
+<<<<<<< HEAD
 //            Order order = new Order(
 //                    Double.parseDouble(trade_price),
 //                    Double.parseDouble(volume),
@@ -50,6 +56,18 @@ public class KafkaConsumer {
 //            // gson library json parsing code
 //
 //            orderService.saveOrder(order);
+=======
+            Order order = new Order(
+                    uuid,
+                    Double.parseDouble(order_price),
+                    0.0,
+                    Double.parseDouble(volume),
+                    side); // price, volume, market
+
+            // gson library json parsing code
+
+            orderService.saveOrder(order);
+>>>>>>> b061f14356cd5383e6789565468b78016a84a014
         } catch (Exception e) {
             log.info("error at Kafka Consumer");
             e.printStackTrace();
