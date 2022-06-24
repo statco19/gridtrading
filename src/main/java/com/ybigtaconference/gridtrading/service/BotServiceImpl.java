@@ -24,6 +24,7 @@ public class BotServiceImpl implements BotService {
 
     private String accessKey,secretKey;
     private static final String serverUrl = "https://api.upbit.com";
+
     private Upbit upbit;
     private UtilService utilService;
     private OrderService orderService;
@@ -182,6 +183,6 @@ public class BotServiceImpl implements BotService {
     public void trade(Envr env) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         this.cancel_all_order(env.getCoin());
 
-        this.levels_order(env.getCoin(), env.getVolume(), );
+        this.levels_order(env.getCoin(), env.getVolume(), env.);
     }
 }

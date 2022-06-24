@@ -9,7 +9,7 @@ ADD ${JAR_FILE} app.jar
 
 VOLUME /tmp
 
-EXPOSE 8080
+EXPOSE 8081
 
 # app.jar 파일을 실행합니다.
 #ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]

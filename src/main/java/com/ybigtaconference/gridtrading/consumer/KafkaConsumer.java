@@ -57,6 +57,7 @@ public class KafkaConsumer {
             // gson library json parsing code
 
             orderService.saveOrder(order);
+
         } catch (Exception e) {
             log.info("error at Kafka Consumer");
             e.printStackTrace();
