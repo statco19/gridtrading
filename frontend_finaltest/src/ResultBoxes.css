@@ -1,0 +1,61 @@
+.ResultBox {
+  padding: 45px;
+  margin: 15px;
+  position: relative;
+  width: 320px;
+  height: 700px;
+  min-width: 100px;
+  max-width: 320px;
+  min-height: 400px;
+  max-height: 800px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  text-align: center;
+  background-color: #212126;
+  box-shadow: 0 3px 8px;
+}
+
+.ResultBox-heading {
+  margin: 0 0 10px;
+  color: #e1e1e6;
+  font-weight: 1;
+  font-size: 42px;
+  text-align: center;
+  letter-spacing: 0.19px;
+  -webkit-text-stroke: 1px #fff;
+}
+
+.ResultPage-row {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+  margin: 50px;
+}
+
+.ResultPage-head {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  color: #e1e1e6;
+  padding-top: 40px;
+  display: inline-block;
+  text-align: center;
+}
+
+.ResultPage-head-name {
+  font-size: 25px;
+}
+
+.BuyTable {
+  text-align: center;
+  color: #e1e1e6;
+}
+
+div {
+  text-align: center;
+}
+
+table {
+  color: #e1e1e6;
+}
