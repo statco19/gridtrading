@@ -11,6 +11,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -25,16 +26,16 @@ public class BotServiceImpl implements BotService {
     private String accessKey,secretKey;
     private static final String serverUrl = "https://api.upbit.com";
 
-    private final UtilService utilService = new UtilServiceImpl();
-//    private final OrderService orderService = new OrderServiceImpl();
-    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private Upbit upbit;
+    private UtilService utilService;
+    private OrderService orderService;
+    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
     public BotServiceImpl(String accessKey, String secretKey) {
         this.accessKey = accessKey;
         this.secretKey = secretKey;
         upbit = new UpbitImpl(this.accessKey, this.secretKey);
     }
-
 
     @Override
     public void connect_upbit() {
@@ -49,7 +50,7 @@ public class BotServiceImpl implements BotService {
 
     @Override
     public void cancel_all_order(String coin) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        String orderList = upbit.get_order(coin);
+        String orderList = upbit.get_order("KRW-" + coin);
         JsonArray jsonArray = gson.fromJson(orderList, JsonArray.class).getAsJsonArray();
 
         for(JsonElement jsonElement : jsonArray) {
@@ -68,21 +69,21 @@ public class BotServiceImpl implements BotService {
     public void sell_all_market(String coin) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         try {
             String volume = upbit.get_balance(coin);
-            String stoploss = upbit.order("KRW-" + coin, null, Float.parseFloat(volume), "ask", "market");
+            String stoploss = upbit.order("KRW-" + coin, null, Double.parseDouble(volume), "ask", "market");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public Float get_avg(String coin) {
+    public Double get_avg(String coin) {
         try {
             String balances = upbit.get_balances();
             JsonArray jsonArray = gson.fromJson(balances, JsonArray.class).getAsJsonArray();
 
             for(JsonElement jsonElement : jsonArray) {
                 if (jsonElement.getAsJsonObject().get("currency").getAsString().equals(coin)) {
-                    Float avg_price = Float.parseFloat(jsonElement.getAsJsonObject().get("avg_buy_price").getAsString());
+                    Double avg_price = Double.parseDouble(jsonElement.getAsJsonObject().get("avg_buy_price").getAsString());
                     return avg_price;
                 }
             }
@@ -93,10 +94,10 @@ public class BotServiceImpl implements BotService {
     }
 
     @Override
-    public Map<String, List<Float>> get_open_price(String coin) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        Map<String, List<Float>> map = new HashMap<>();
-        List<Float> bid_list = new ArrayList<>();
-        List<Float> ask_list = new ArrayList<>();
+    public Map<String, List<Double>> get_open_price(String coin) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        Map<String, List<Double>> map = new HashMap<>();
+        List<Double> bid_list = new ArrayList<>();
+        List<Double> ask_list = new ArrayList<>();
 
         try {
             String orders = upbit.get_order("KRW-" + coin);
@@ -104,9 +105,9 @@ public class BotServiceImpl implements BotService {
 
             for (JsonElement jsonElement : jsonArray) {
                 if (jsonElement.getAsJsonObject().get("side").getAsString().equals("bid")) {
-                    bid_list.add(Float.parseFloat(jsonElement.getAsJsonObject().get("price").getAsString()));
+                    bid_list.add(Double.parseDouble(jsonElement.getAsJsonObject().get("price").getAsString()));
                 } else {
-                    ask_list.add(Float.parseFloat(jsonElement.getAsJsonObject().get("price").getAsString()));
+                    ask_list.add(Double.parseDouble(jsonElement.getAsJsonObject().get("price").getAsString()));
                 }
             }
 
@@ -124,9 +125,9 @@ public class BotServiceImpl implements BotService {
     }
 
     @Override
-    public void levels_order(String coin, Float volume, List<Float> levels) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public void levels_order(String coin, Double volume, List<Double> levels) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         try {
-            for (Float price : levels) {
+            for (Double price : levels) {
                 upbit.order("KRW-" + coin, price, volume, "bid", "limit");
                 Thread.sleep(100);
             }
@@ -142,22 +143,25 @@ public class BotServiceImpl implements BotService {
         String current = upbit.get_current_price("KRW-" + envr.getCoin());
         String balance_KRW = upbit.get_balance("KRW");
 
-        if(Float.parseFloat(balance_KRW) < envr.getBudget()) {
+        if(Double.parseDouble(balance_KRW) < envr.getBudget()) {
             throw new Exception("현금 보유량이 예산보다 적습니다.");
         }
 
-        Float scale = utilService.get_price_scale_tick(Float.parseFloat(current));
+        Double scale = utilService.get_price_scale_tick(Double.parseDouble(current));
         envr.setScale(scale);
 
-        envr.setUpper(Float.parseFloat(current));
+        envr.setUpper(Double.parseDouble(current));
         // envr.setLower is done
 
-        List<Float> levels = utilService.make_levels(envr.getMode(), envr.getUpper(), envr.getLower(), envr.getGrids());
-        Float diff = levels.get(levels.size() - 1);
+        List<Double> levels = utilService.make_levels(envr.getMode(), envr.getUpper(), envr.getLower(), envr.getGrids());
+        Double diff = levels.get(levels.size() - 1);
+        Double diff_removed = levels.remove(levels.size() - 1);
+//        log.info("remove diff {}", diff_removed);
+
         envr.setLevels(levels);
         envr.setDiff(diff);
 
-        Float volume = utilService.get_volume(Float.parseFloat(current), envr.getBudget(), envr.getGrids());
+        Double volume = utilService.get_volume(Double.parseDouble(current), envr.getBudget(), envr.getGrids());
         envr.setVolume(volume);
 
         log.info("{}", LocalDateTime.now());
@@ -169,7 +173,7 @@ public class BotServiceImpl implements BotService {
 
         if(envr.getMode().equals("Arithmetic")) {
             log.info("Difference(KRW): {}", String.format("%.4f", diff));
-            log.info("수익률: {}", String.format("%.2f", diff/(Float.parseFloat(current))*100));
+            log.info("수익률: {}", String.format("%.2f", diff/(Double.parseDouble(current))*100));
         } else {
             log.info("Difference(%): {}", String.format("%.2f", (diff-1)*100));
             log.info("수익률: {}", String.format("%.2f", (diff-1)*100));
@@ -180,7 +184,103 @@ public class BotServiceImpl implements BotService {
     }
 
     @Override
-    public void trade(Envr env) {
+    public void trade(Envr env) throws IOException, NoSuchAlgorithmException, InterruptedException {
+        // 전체 주문 취소
+        this.cancel_all_order(env.getCoin());
+        // 초기 매수 주문
+        this.levels_order(env.getCoin(), env.getVolume(), env.getLevels());
+        log.info("{}", this.get_open_price(env.getCoin()));
 
+        List<String> before_list = new ArrayList<>();
+        List<String> now_list = new ArrayList<>();
+
+        while(true) {
+            Thread.sleep(500);
+
+            Double current = Double.parseDouble(upbit.get_current_price("KRW-" + env.getCoin()));
+            Double avg_price = this.get_avg(env.getCoin());
+
+            if(avg_price != null) {
+                Double profit = (current-avg_price)/avg_price*100;
+                if(profit < (-1)*env.getStop_loss()) {
+                    log.info("**STOP LOSS 실행**");
+                    log.info("{} 현재가(KRW): {}", env.getCoin(), current);
+                    log.info("{} 평단가(KRW): {}", env.getCoin(), avg_price);
+                    log.info("현재 손익: {}", String.format("%.2f", profit));
+
+                    // 모든 주문 취소
+                    this.cancel_all_order(env.getCoin());
+
+                    // 모든 코인 시장가 매도
+                    this.sell_all_market(env.getCoin());
+
+                    log.info("종료");
+                    break;
+                }
+            }
+
+            // 미체결 주문수가 GRIDS와 다르면 추가 주문
+            String orders = upbit.get_order("KRW-" + env.getCoin());
+            JsonArray now_open = gson.fromJson(orders, JsonArray.class).getAsJsonArray();
+
+            if(!Objects.equals(env.getGrids(), now_open.size())) {
+                now_list = new ArrayList<>();
+                for(JsonElement jsonElement : now_open) {
+                    now_list.add(jsonElement.getAsString());
+                }
+
+                String doneOrder = "";
+                for(String order : before_list) {
+                    if(!now_list.contains(order)) {
+                        doneOrder = order;
+                        break;
+                    }
+                }
+
+                // producer.send(doneOrder)
+                log.info("doneOrder {} ", doneOrder);
+
+                Double balance_coin = Double.parseDouble(upbit.get_balance(env.getCoin()));
+                Double last_price = Double.parseDouble(upbit.get_current_price("KRW-" + env.getCoin()));
+
+                String ret = "";
+                String side;
+                Double price = null;
+                if(balance_coin != 0) {
+                    side = "bid";
+                    if(env.getMode().equals("Arithmetic")) {
+                        price = last_price + env.getDiff();
+                    } else {
+                        price = last_price * env.getDiff();
+                    }
+                } else {
+                    side = "ask";
+                    if(env.getMode().equals("Arithmetic")) {
+                        price = last_price - env.getDiff();
+                    } else {
+                        price = last_price / env.getDiff();
+                    }
+
+                }
+                price = utilService.get_tick_size(price, "floor");
+                ret = upbit.order("KRW-" + env.getCoin(), price, env.getVolume(), "ask", "limit");
+
+                if(ret.contains("error")) {
+                    log.info("trade error");
+                }
+
+                else {
+                    log.info("");
+                    log.info("{}", LocalDateTime.now());
+                    log.info("{} -> {}KRW {}{} 체결", side, last_price, env.getVolume(), env.getCoin());
+                    log.info("{}", this.get_open_price(env.getCoin()));
+                }
+            } else {
+                for(JsonElement jsonElement : now_open) {
+                    before_list.add(jsonElement.getAsString());
+                }
+            }
+
+        }
     }
 }
