@@ -10,7 +10,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -20,22 +19,24 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 @Getter @Setter
-public class botServiceImpl implements botService {
+public class BotServiceImpl implements BotService {
 
     private String accessKey,secretKey;
     private static final String serverUrl = "https://api.upbit.com";
-    private final Upbit upbit = new UpbitImpl();
+
     private final UtilService utilService = new UtilServiceImpl();
 //    private final OrderService orderService = new OrderServiceImpl();
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-    public botServiceImpl(String accessKey, String secretKey) {
+    private Upbit upbit;
+    public BotServiceImpl(String accessKey, String secretKey) {
         this.accessKey = accessKey;
         this.secretKey = secretKey;
+        upbit = new UpbitImpl(this.accessKey, this.secretKey);
     }
 
+
     @Override
-    public void connect_upbit(String keyPath) {
+    public void connect_upbit() {
         try {
             String balance = upbit.get_balances();
             log.info("연결 성공");

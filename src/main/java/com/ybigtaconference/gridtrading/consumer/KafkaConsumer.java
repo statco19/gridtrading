@@ -42,14 +42,14 @@ public class KafkaConsumer {
                     .get("side")
                     .getAsString();
 
-            Order order = new Order(
-                    Double.parseDouble(trade_price),
-                    Double.parseDouble(volume),
-                    side); // price, volume, market
-
-            // gson library json parsing code
-
-            orderService.saveOrder(order);
+//            Order order = new Order(
+//                    Double.parseDouble(trade_price),
+//                    Double.parseDouble(volume),
+//                    side); // price, volume, market
+//
+//            // gson library json parsing code
+//
+//            orderService.saveOrder(order);
         } catch (Exception e) {
             log.info("error at Kafka Consumer");
             e.printStackTrace();

@@ -48,9 +48,9 @@ public class BasicController {
         return orderService.getCandle();
     }
 
-    @PostConstruct
-    public void init() {
-        orderService.saveOrder(new Order(25000000.0, 0.002, "buy"));
-        orderService.saveOrder(new Order(26000000.0, 0.004, "buy"));
-    }
+//    @PostConstruct
+//    public void init() {
+//        orderService.saveOrder(new Order(25000000.0, 0.002, "buy"));
+//        orderService.saveOrder(new Order(26000000.0, 0.004, "buy"));
+//    }
 }
