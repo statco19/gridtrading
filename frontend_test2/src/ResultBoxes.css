@@ -1,0 +1,41 @@
+.ResultBox {
+  padding: 45px;
+  margin: 15px;
+  position: relative;
+  width: 170px;
+  min-width: 100px;
+  max-width: 250px;
+  min-height: 400px;
+  max-height: 500px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  text-align: center;
+  background-color: #393f51;
+  box-shadow: 0 4.2px 2px #292d3b, 0 -4.2px 2px #292d3b;
+}
+
+.ResultBox-heading {
+  margin: 0 0 10px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 22px;
+  text-align: center;
+  text-shadow: 0 3px 0 #36353c;
+  letter-spacing: 0.19px;
+  -webkit-text-stroke: 1px #fff;
+}
+
+.ResultPage-row {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+  margin: 50px;
+}
+
+.ResultPage-head {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  color: #fff;
+}
