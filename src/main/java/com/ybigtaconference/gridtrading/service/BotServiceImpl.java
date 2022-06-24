@@ -24,7 +24,6 @@ public class BotServiceImpl implements BotService {
 
     private String accessKey,secretKey;
     private static final String serverUrl = "https://api.upbit.com";
-<<<<<<< HEAD:src/main/java/com/ybigtaconference/gridtrading/service/BotServiceImpl.java
 
     private final UtilService utilService = new UtilServiceImpl();
 //    private final OrderService orderService = new OrderServiceImpl();
@@ -35,17 +34,6 @@ public class BotServiceImpl implements BotService {
         this.secretKey = secretKey;
         upbit = new UpbitImpl(this.accessKey, this.secretKey);
     }
-=======
-    private final Upbit upbit;
-    private final UtilService utilService;
-    private final OrderService orderService;
-    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
-//    public botServiceImpl(String accessKey, String secretKey) {
-//        this.accessKey = accessKey;
-//        this.secretKey = secretKey;
-//    }
->>>>>>> b061f14356cd5383e6789565468b78016a84a014:src/main/java/com/ybigtaconference/gridtrading/service/botServiceImpl.java
 
 
     @Override

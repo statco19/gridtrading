@@ -48,10 +48,10 @@ public class UpbitImpl implements Upbit {
 //    public UpbitImpl() {
 //    }
 //
-//    public UpbitImpl(String accessKey, String secretKey) {
-//        this.accessKey = accessKey;
-//        this.secretKey = secretKey;
-//    }
+    public UpbitImpl(String accessKey, String secretKey) {
+        this.accessKey = accessKey;
+        this.secretKey = secretKey;
+    }
 
     @Override
     public String get_balances() {
