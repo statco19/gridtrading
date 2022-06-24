@@ -10,7 +10,7 @@ public class Params {
 
     String mode, coin;
     Integer grids;
-    Float budget, lower, stop_loss;
+    Double budget, lower, stop_loss;
 
     public Params() {
     }

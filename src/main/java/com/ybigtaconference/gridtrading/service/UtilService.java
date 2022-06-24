@@ -3,11 +3,11 @@ package com.ybigtaconference.gridtrading.service;
 import java.util.List;
 
 public interface UtilService {
-    public Float get_price_scale_tick(Float price);
-    public Float get_tick_size(Float price, String method);
-    public Float calculation_with_methods(Float price, String method, Float operand);
-    public List<Float> make_levels(String mode, Float upper, Float lower, Integer grids);
-    public Float get_std(String coin, Integer interval, Integer stdNum);
-    public List<Float> get_boundary(Float current, Float std, Float lowerStd);
-    public Float get_volume(Float current, Float budget, Integer grids);
+    public Double get_price_scale_tick(Double price);
+    public Double get_tick_size(Double price, String method);
+    public Double calculation_with_methods(Double price, String method, Double operand);
+    public List<Double> make_levels(String mode, Double upper, Double lower, Integer grids);
+    public Double get_std(String coin, Integer interval, Integer stdNum);
+    public List<Double> get_boundary(Double current, Double std, Double lowerStd);
+    public Double get_volume(Double current, Double budget, Integer grids);
 }

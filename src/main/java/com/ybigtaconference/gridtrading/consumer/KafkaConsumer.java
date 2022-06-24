@@ -47,6 +47,8 @@ public class KafkaConsumer {
                     .get("side")
                     .getAsString();
 
+//            String status =
+
             Order order = new Order(
                     uuid,
                     Double.parseDouble(order_price),
@@ -57,6 +59,7 @@ public class KafkaConsumer {
             // gson library json parsing code
 
             orderService.saveOrder(order);
+
 
         } catch (Exception e) {
             log.info("error at Kafka Consumer");

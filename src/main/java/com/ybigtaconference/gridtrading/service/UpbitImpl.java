@@ -220,13 +220,13 @@ public class UpbitImpl implements Upbit {
     }
 
     @Override
-    public String order(String ticker, Float price, Float volume, String side, String ord_type) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public String order(String ticker, Double price, Double volume, String side, String ord_type) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         HashMap<String, String> params = new HashMap<>();
         params.put("market", ticker);
         params.put("side", side);
         params.put("volume", volume.toString());
         params.put("ord_type", ord_type);
-        if(ord_type.equals("market")) {
+        if(ord_type.equals("limit")) {
             params.put("price", price.toString());
         }
 
@@ -281,14 +281,20 @@ public class UpbitImpl implements Upbit {
 
         try {
             Request request = new Request.Builder()
-                    .url("https://api.upbit.com/v1/trades/ticks?count=1")
+                    .url("https://api.upbit.com/v1/trades/ticks?market="+ ticker +"&count=1")
                     .get()
                     .addHeader("Accept", "application/json")
                     .build();
 
             Response response = client.newCall(request).execute();
             String str = response.body().string();
-            String trade_price = gson.fromJson(str, JsonArray.class).getAsJsonObject().get("trade_price").getAsString();
+            String trade_price = gson.fromJson(str, JsonArray.class)
+                    .getAsJsonArray()
+                    .get(0)
+                    .getAsJsonObject()
+                    .get("trade_price")
+                    .getAsString();
+
             return trade_price;
         } catch (Exception e) {
             e.printStackTrace();
