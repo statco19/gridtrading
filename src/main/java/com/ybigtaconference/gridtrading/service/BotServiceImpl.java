@@ -11,6 +11,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -180,9 +181,79 @@ public class BotServiceImpl implements BotService {
     }
 
     @Override
-    public void trade(Envr env) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public void trade(Envr env) throws IOException, NoSuchAlgorithmException, InterruptedException {
+        // 전체 주문 취소
         this.cancel_all_order(env.getCoin());
+        // 초기 매수 주문
+        this.levels_order(env.getCoin(), env.getVolume(), env.getLevels());
+        log.info("{}", this.get_open_price(env.getCoin()));
 
-        this.levels_order(env.getCoin(), env.getVolume(), env.);
+        while(true) {
+            Thread.sleep(500);
+
+            Float current = Float.parseFloat(upbit.get_current_price("KRW-" + env.getCoin()));
+            Float avg_price = this.get_avg(env.getCoin());
+
+            if(avg_price != null) {
+                Float profit = (current-avg_price)/avg_price*100;
+                if(profit < (-1)*env.getStop_loss()) {
+                    log.info("**STOP LOSS 실행**");
+                    log.info("{} 현재가(KRW): {}", env.getCoin(), current);
+                    log.info("{} 평단가(KRW): {}", env.getCoin(), avg_price);
+                    log.info("현재 손익: {}", String.format("%.2f", profit));
+
+                    // 모든 주문 취소
+                    this.cancel_all_order(env.getCoin());
+
+                    // 모든 코인 시장가 매도
+                    this.sell_all_market(env.getCoin());
+
+                    log.info("종료");
+                    break;
+                }
+            }
+
+            // 미체결 주문수가 GRIDS와 다르면 추가 주문
+            String orders = upbit.get_order("KRW-" + env.getCoin());
+            Integer now_open = gson.fromJson(orders, JsonArray.class).getAsJsonArray().size();
+            if(!Objects.equals(env.getGrids(), now_open)) {
+                Float balance_coin = Float.parseFloat(upbit.get_balance(env.getCoin()));
+                Float last_price = Float.parseFloat(upbit.get_current_price("KRW-" + env.getCoin()));
+
+                String ret = "";
+                String side;
+                Float price = null;
+                if(balance_coin != 0) {
+                    side = "bid";
+                    if(env.getMode().equals("Arithmetic")) {
+                        price = last_price + env.getDiff();
+                    } else {
+                        price = last_price * env.getDiff();
+                    }
+                } else {
+                    side = "ask";
+                    if(env.getMode().equals("Arithmetic")) {
+                        price = last_price - env.getDiff();
+                    } else {
+                        price = last_price / env.getDiff();
+                    }
+
+                }
+                price = utilService.get_tick_size(price, "floor");
+                ret = upbit.order("KRW-" + env.getCoin(), price, env.getVolume(), "ask", "limit");
+
+                if(ret.contains("error")) {
+                    log.info("trade error");
+                }
+
+                else {
+                    log.info("");
+                    log.info("{}", LocalDateTime.now());
+                    log.info("{} -> {}KRW {}{} 체결", side, last_price, env.getVolume(), env.getCoin());
+                    log.info("{}", this.get_open_price(env.getCoin()));
+                }
+            }
+
+        }
     }
 }

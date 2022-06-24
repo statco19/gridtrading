@@ -49,7 +49,7 @@ public class UtilServiceImpl implements UtilService{
     }
 
     @Override
-    public Float get_tick_size(Float price, String method ) {
+    public Float get_tick_size(Float price, String method) {
         /* 원화마켓 주문 가격 단위
 
         Args:
