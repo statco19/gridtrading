@@ -1,6 +1,7 @@
 package com.ybigtaconference.gridtrading.controller;
 
 import com.ybigtaconference.gridtrading.db.entity.Order;
+import com.ybigtaconference.gridtrading.service.BotService;
 import com.ybigtaconference.gridtrading.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -50,7 +51,8 @@ public class BasicController {
 
     @PostConstruct
     public void init() {
-        orderService.saveOrder(new Order(25000000.0, 0.002, "buy"));
-        orderService.saveOrder(new Order(26000000.0, 0.004, "buy"));
+        orderService.saveOrder(new Order("asd3-ds12-dga3-das2",30000000.0,26500000.0,0.0003, "bid"));
+        orderService.saveOrder(new Order("jgk4-aks7-122l-2jdi",30000000.0,26700000.0,0.0002, "bid"));
+
     }
 }

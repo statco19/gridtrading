@@ -2,6 +2,7 @@ package com.ybigtaconference.gridtrading.controller;
 
 import com.ybigtaconference.gridtrading.domain.UserInput;
 import com.ybigtaconference.gridtrading.producer.KafkaProducer;
+import com.ybigtaconference.gridtrading.service.BotServiceImpl;
 import com.ybigtaconference.gridtrading.service.OrderService;
 import com.ybigtaconference.gridtrading.service.UpbitImpl;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ public class KafkaController {
     private final KafkaProducer producer;
     private final OrderService orderService;
     private final UpbitImpl upbit;
+    private final BotServiceImpl botService;
 
     @PostMapping
     public String sendMessage(@RequestParam("message") String message) {
