@@ -229,5 +229,5 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/intellij,macos,windows,git
 
 /src/main/java/com/ybigtaconference/gridtrading/credentials
-/src/test
+/src/main/java/testtest
 
