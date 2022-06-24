@@ -48,15 +48,15 @@ public class UpbitImpl implements Upbit {
 //    public UpbitImpl() {
 //    }
 //
-//    public UpbitImpl(String accessKey, String secretKey) {
-//        this.accessKey = accessKey;
-//        this.secretKey = secretKey;
-//    }
+    public UpbitImpl(String accessKey, String secretKey) {
+        this.accessKey = accessKey;
+        this.secretKey = secretKey;
+    }
 
     @Override
     public String get_balances() {
-        log.info("accessKey {}", accessKey);
-        log.info("secretKye {}", secretKey);
+        log.info("accessKey {}", this.accessKey);
+        log.info("secretKey {}", this.secretKey);
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
         String jwtToken = JWT.create()
                 .withClaim("access_key", accessKey)

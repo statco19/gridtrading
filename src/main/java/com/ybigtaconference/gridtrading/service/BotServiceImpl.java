@@ -24,15 +24,17 @@ public class BotServiceImpl implements BotService {
 
     private String accessKey,secretKey;
     private static final String serverUrl = "https://api.upbit.com";
-    private final Upbit upbit;
-    private final UtilService utilService;
-    private final OrderService orderService;
-    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-//    public botServiceImpl(String accessKey, String secretKey) {
-//        this.accessKey = accessKey;
-//        this.secretKey = secretKey;
-//    }
+    private final UtilService utilService = new UtilServiceImpl();
+//    private final OrderService orderService = new OrderServiceImpl();
+    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private Upbit upbit;
+    public BotServiceImpl(String accessKey, String secretKey) {
+        this.accessKey = accessKey;
+        this.secretKey = secretKey;
+        upbit = new UpbitImpl(this.accessKey, this.secretKey);
+    }
+
 
     @Override
     public void connect_upbit() {

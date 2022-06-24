@@ -49,10 +49,12 @@ public class BasicController {
         return orderService.getCandle();
     }
 
+
     @PostConstruct
     public void init() {
         orderService.saveOrder(new Order("asd3-ds12-dga3-das2",30000000.0,26500000.0,0.0003, "bid"));
         orderService.saveOrder(new Order("jgk4-aks7-122l-2jdi",30000000.0,26700000.0,0.0002, "bid"));
 
     }
+
 }
