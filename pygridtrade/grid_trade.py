@@ -228,13 +228,13 @@ class trading_bot:
         env['scale'] = scale
 
         # 변동성 계산
-        std = get_std(COIN, INTERVAL, STD_NUM)
-        env['std'] = std
+#         std = get_std(COIN, INTERVAL, STD_NUM)
+#         env['std'] = std
         
         # 상한선 하한선 계산
         upper, lower = get_boundary(current, std, LOWER_STD)
-        env['upper'] = upper
-        env['lower'] = lower
+        env['upper'] = upper  # env['upper'] = current
+#         env['lower'] = lower
         
         # grid levels 생성
         levels= make_levels(MODE, upper, lower, GRIDS)
@@ -304,20 +304,20 @@ class trading_bot:
                     
                     
             # 가격이 일정 기준 이상 오르면 GRID 리셋
-            if (current-levels[-1])/levels[-1]*100 > RESET_GRID:
-                print("**GRID 리셋**")
-                # 모든 주문 취소
-                self.cancel_all_order(COIN)
-
-                # 현재 가격에 맞춰서 levels 다시 설정
-                env = self.set_env(COIN, MODE, GRIDS, BUDGET, INTERVAL, STD_NUM, LOWER_STD)
-
-                # 동적 변수 할당
-                for key, value in env.items():
-                    globals()[key] = value
-
-                # 초기 매수 주문 다시 넣기
-                self.levels_order(COIN, volume, levels)
+#             if (current-levels[-1])/levels[-1]*100 > RESET_GRID:
+#                 print("**GRID 리셋**")
+#                 # 모든 주문 취소
+#                 self.cancel_all_order(COIN)
+#
+#                 # 현재 가격에 맞춰서 levels 다시 설정
+#                 env = self.set_env(COIN, MODE, GRIDS, BUDGET, INTERVAL, STD_NUM, LOWER_STD)
+#
+#                 # 동적 변수 할당
+#                 for key, value in env.items():
+#                     globals()[key] = value
+#
+#                 # 초기 매수 주문 다시 넣기
+#                 self.levels_order(COIN, volume, levels)
             
             
             # 미체결 주문수가 GRIDS와 다르면 추가 주문

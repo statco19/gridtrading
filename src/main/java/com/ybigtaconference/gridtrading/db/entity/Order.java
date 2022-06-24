@@ -15,27 +15,26 @@ public class Order {
     @Column(name = "ORDER_ID")
     private Long id;
 
-    @Column(name = "PRICE")
-    private Integer price;
+    @Column(name = "UUID")
+    private String uuid;
+
+    @Column(name = "ORDER_PRICE")
+    private Double order_price;
+
+    @Column(name = "TRADE_PRICE")
+    private Double trade_price;  // -1:cancel, 0:wait >0: done
 
     @Column(name = "VOLUME")
     private Double volume;
 
-    @Column(name = "MARKET")
-    private String market;
+    @Column(name = "SIDE")
+    private String side;
 
-//    @Column(name = "CREATED_AT")
-//    private LocalDateTime created_at;
-//
-//    @Column(name = "UUID")
-//    private String uuid;
+    @Column(name = "CREATED_AT")
+    private LocalDateTime created_at;
+
 
     public Order() {
     }
 
-    public Order(Integer price, Double volume, String market) {
-        this.price = price;
-        this.volume = volume;
-        this.market = market;
-    }
 }

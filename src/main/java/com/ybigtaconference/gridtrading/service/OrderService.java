@@ -9,5 +9,6 @@ public interface OrderService {
     public Order saveOrder(Order order);
     public String getCoinTradePrice(String coin) throws IOException;
     public String getCandle() throws IOException;
+    public void modify_trade_price(String uuid, Double trade_price);
 
 }

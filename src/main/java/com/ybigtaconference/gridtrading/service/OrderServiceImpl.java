@@ -49,5 +49,11 @@ public class OrderServiceImpl implements OrderService{
         return response.body().string();
     }
 
+    @Override
+    public void modify_trade_price(String uuid, Double trade_price) {
 
+        Order foundOrder = orderRepository.findByUuid(uuid);
+        foundOrder.setTrade_price(trade_price);
+        return;
+    }
 }

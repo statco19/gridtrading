@@ -9,16 +9,17 @@ public class UserInput {
     String secretKey;
     Float budget;
     Float stopLoss;
-    Integer gridNum;
+    Integer gridNum, lower;
 
     public UserInput() {
     }
 
-    public UserInput(String accessKey, String secretKey, Float budget, Float stopLoss, Integer gridNum) {
+    public UserInput(String accessKey, String secretKey, Float budget, Float stopLoss, Integer gridNum, Integer lower) {
         this.accessKey = accessKey;
         this.secretKey = secretKey;
         this.budget = budget;
         this.stopLoss = stopLoss;
         this.gridNum = gridNum;
+        this.lower = lower;
     }
 }

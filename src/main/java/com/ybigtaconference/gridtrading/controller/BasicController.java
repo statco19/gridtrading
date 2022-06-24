@@ -50,7 +50,7 @@ public class BasicController {
 
     @PostConstruct
     public void init() {
-        orderService.saveOrder(new Order(25000000, 0.002, "buy"));
-        orderService.saveOrder(new Order(26000000, 0.004, "buy"));
+        orderService.saveOrder(new Order(25000000.0, 0.002, "buy"));
+        orderService.saveOrder(new Order(26000000.0, 0.004, "buy"));
     }
 }
