@@ -48,7 +48,7 @@ public class KafkaController {
         upbit.setSecretKey(userInput.getSecretKey());
 
         try {
-            String res = upbit.order("KRW-BTC", 30000000f, 0.0002f,"bid", "limit");
+            String res = upbit.order("KRW-BTC", 30000000., 0.0002,"bid", "limit");
 //            String res = EntityUtils.toString(orderResponse, "UTF-8");
             log.info("order response {}", res);
             // while loop until wait

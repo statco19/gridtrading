@@ -85,7 +85,7 @@ public class UpbitImpl implements Upbit {
 //                System.out.println(EntityUtils.toString(entity, "UTF-8"));
                 log.info("commit_order {}", res);
 
-//                System.out.println(EntityUtils.toString(entity, "UTF-8"));
+
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;

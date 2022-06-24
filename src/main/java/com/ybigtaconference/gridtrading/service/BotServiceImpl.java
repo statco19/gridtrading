@@ -13,7 +13,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -23,18 +26,21 @@ import java.util.*;
 @Getter @Setter
 public class BotServiceImpl implements BotService {
 
+
     private String accessKey,secretKey;
     private static final String serverUrl = "https://api.upbit.com";
 
-    private Upbit upbit;
+    private UpbitImpl upbit;
     private UtilService utilService;
-    private OrderService orderService;
+//    private OrderService orderService;
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public BotServiceImpl(String accessKey, String secretKey) {
         this.accessKey = accessKey;
         this.secretKey = secretKey;
         upbit = new UpbitImpl(this.accessKey, this.secretKey);
+        utilService = new UtilServiceImpl();
+
     }
 
     @Override
@@ -138,6 +144,8 @@ public class BotServiceImpl implements BotService {
 
     @Override
     public Envr set_env(Params params) throws Exception {
+        upbit.setAccessKey(this.accessKey);
+        upbit.setSecretKey(this.secretKey);
         Envr envr = new Envr(params);
 
         String current = upbit.get_current_price("KRW-" + envr.getCoin());
@@ -146,8 +154,20 @@ public class BotServiceImpl implements BotService {
         if(Double.parseDouble(balance_KRW) < envr.getBudget()) {
             throw new Exception("현금 보유량이 예산보다 적습니다.");
         }
+        String a = "27000.000";
+
+        System.out.println("here "+Double.parseDouble(a));
+        System.out.println("here "+current);
+        System.out.println("here "+Double.valueOf(current));
+//        BigDecimal bigDecimal = new BigDecimal(String.format("%.8f", Double.parseDouble("2345678.7654321")));
+
+//        log.info("Double ? {}", bigDecimal);
+        Double dou = 1000.000;
+
+        System.out.println(utilService.get_price_scale_tick(dou));
 
         Double scale = utilService.get_price_scale_tick(Double.parseDouble(current));
+//        Double scale = utilService.get_price_scale_tick(bigDecimal);
         envr.setScale(scale);
 
         envr.setUpper(Double.parseDouble(current));
