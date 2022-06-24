@@ -26,6 +26,7 @@ public class botServiceImpl implements botService {
     private static final String serverUrl = "https://api.upbit.com";
     private final Upbit upbit = new UpbitImpl();
     private final UtilService utilService = new UtilServiceImpl();
+//    private final OrderService orderService = new OrderServiceImpl();
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public botServiceImpl(String accessKey, String secretKey) {
@@ -53,6 +54,7 @@ public class botServiceImpl implements botService {
             try {
                 String uuid = jsonElement.getAsJsonObject().get("uuid").getAsString();
                 upbit.cancel_order(uuid);
+//                orderService
                 Thread.sleep(100);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -172,7 +174,7 @@ public class botServiceImpl implements botService {
         }
 
         return envr;
-        
+
     }
 
     @Override

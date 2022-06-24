@@ -15,8 +15,14 @@ public class Order {
     @Column(name = "ORDER_ID")
     private Long id;
 
-    @Column(name = "PRICE")
-    private Double price;
+    @Column(name = "UUID")
+    private String uuid;
+
+    @Column(name = "ORDER_PRICE")
+    private Double order_price;
+
+    @Column(name = "TRADE_PRICE")
+    private Double trade_price;  // -1:cancel, 0:wait >0: done
 
     @Column(name = "VOLUME")
     private Double volume;
@@ -24,21 +30,11 @@ public class Order {
     @Column(name = "SIDE")
     private String side;
 
-    @Column(name = "IS_DONE")
-    private Integer isDone;
+    @Column(name = "CREATED_AT")
+    private LocalDateTime created_at;
 
-//    @Column(name = "CREATED_AT")
-//    private LocalDateTime created_at;
-//
-//    @Column(name = "UUID")
-//    private String uuid;
 
     public Order() {
     }
 
-    public Order(Double price, Double volume, String side) {
-        this.price = price;
-        this.volume = volume;
-        this.side = side;
-    }
 }
