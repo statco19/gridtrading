@@ -24,15 +24,16 @@ public class BotServiceImpl implements BotService {
 
     private String accessKey,secretKey;
     private static final String serverUrl = "https://api.upbit.com";
-    private final Upbit upbit;
-    private final UtilService utilService;
-    private final OrderService orderService;
+    private Upbit upbit;
+    private UtilService utilService;
+    private OrderService orderService;
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-//    public botServiceImpl(String accessKey, String secretKey) {
-//        this.accessKey = accessKey;
-//        this.secretKey = secretKey;
-//    }
+    public BotServiceImpl(String accessKey, String secretKey) {
+        this.accessKey = accessKey;
+        this.secretKey = secretKey;
+        upbit = new UpbitImpl(this.accessKey, this.secretKey);
+    }
 
     @Override
     public void connect_upbit() {
@@ -178,7 +179,9 @@ public class BotServiceImpl implements BotService {
     }
 
     @Override
-    public void trade(Envr env) {
+    public void trade(Envr env) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        this.cancel_all_order(env.getCoin());
 
+        this.levels_order(env.getCoin(), env.getVolume(), );
     }
 }
