@@ -7,14 +7,14 @@ import lombok.Setter;
 public class UserInput {
     String accessKey;
     String secretKey;
-    Float budget;
-    Float stopLoss;
+    Double budget;
+    Double stopLoss;
     Integer gridNum, lower;
 
     public UserInput() {
     }
 
-    public UserInput(String accessKey, String secretKey, Float budget, Float stopLoss, Integer gridNum, Integer lower) {
+    public UserInput(String accessKey, String secretKey, Double budget, Double stopLoss, Integer gridNum, Integer lower) {
         this.accessKey = accessKey;
         this.secretKey = secretKey;
         this.budget = budget;

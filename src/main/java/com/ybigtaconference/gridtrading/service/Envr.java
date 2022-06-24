@@ -10,8 +10,8 @@ public class Envr {
 
     String mode, coin;
     Integer grids;
-    Float budget, scale, std, upper, lower, diff, volume, stop_loss;
-    List<Float> levels;
+    Double budget, scale, std, upper, lower, diff, volume, stop_loss;
+    List<Double> levels;
 
 
     public Envr() {

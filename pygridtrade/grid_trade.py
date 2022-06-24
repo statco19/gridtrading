@@ -321,8 +321,14 @@ class trading_bot:
             
             
             # 미체결 주문수가 GRIDS와 다르면 추가 주문
-            now_open = len(self.upbit.get_order(f"KRW-{COIN}")) # 현재 미체결 주문수
-            if GRIDS != now_open:
+            # now_open = len(self.upbit.get_order(f"KRW-{COIN}")) # 현재 미체결 주문수
+            now_open = self.upbit.get_order(f"KRW-{COIN}") # 현재 미체결 주문수
+
+            if GRIDS != len(now_open):
+                closed_uuid = (set(before_open) - set(now_open))[0]["uuid"]
+                # producer.send(APIcall(uuid))
+
+
                 balance_coin = self.upbit.get_balance(COIN) # 코인 보유량으로 매수 매도 판단
                 last_price = get_current_price(f"KRW-{COIN}") # 최근 체결 가격
                 
@@ -354,3 +360,6 @@ class trading_bot:
                     print(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                     print(f"{side} -> {last_price}KRW  {volume}{COIN} 체결")
                     print(self.get_open_price(COIN))
+
+            else:
+                before_open = now_open.copy()
