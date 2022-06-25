@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.ybigtaconference.gridtrading.db.entity.Order;
+import com.ybigtaconference.gridtrading.db.repository.OrderRepository;
 import com.ybigtaconference.gridtrading.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import java.math.BigDecimal;
 public class KafkaConsumer {
 
     private final OrderService orderService;
+    private final OrderRepository orderRepository;
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @KafkaListener(topics = "grid-test",
@@ -55,7 +57,7 @@ public class KafkaConsumer {
 
 
             if(state.equals("wait")) {
-                if(orderService.findOrderByUuid(uuid) == null) {
+                if(orderRepository.findByUuidExists(uuid)) {
                     Order order = new Order(
                             uuid,
                             price,

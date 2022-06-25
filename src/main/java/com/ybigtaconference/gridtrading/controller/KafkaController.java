@@ -1,5 +1,7 @@
 package com.ybigtaconference.gridtrading.controller;
 
+import com.ybigtaconference.gridtrading.db.entity.Order;
+import com.ybigtaconference.gridtrading.db.repository.OrderRepository;
 import com.ybigtaconference.gridtrading.domain.UserInput;
 import com.ybigtaconference.gridtrading.producer.KafkaProducer;
 import com.ybigtaconference.gridtrading.service.*;
@@ -7,11 +9,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/kafka")
-@CrossOrigin
+@CrossOrigin(origins = "*")
 public class KafkaController {
 
     private final KafkaProducer producer;
@@ -19,6 +24,7 @@ public class KafkaController {
     private final UpbitImpl upbit;
     private final UtilService utilService;
     private final BotServiceImpl botService;
+    private final OrderRepository orderRepository;
 
     @PostMapping
     public String sendMessage(@RequestParam("message") String message) {
@@ -94,6 +100,16 @@ public class KafkaController {
         }
 
         return "trading on process";
+    }
+
+    @GetMapping("/fetch-wait")
+    public List<Order> fetchWait() {
+        return orderRepository.findAllByTrade_priceEquals("0.0");
+    }
+
+    @GetMapping("/fetch-done")
+    public List<Order> fetchDone() {
+        return orderRepository.findAllByOrder_priceEquals("0.0");
     }
 
 }

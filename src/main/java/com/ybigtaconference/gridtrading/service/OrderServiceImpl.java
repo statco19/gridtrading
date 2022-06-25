@@ -54,16 +54,11 @@ public class OrderServiceImpl implements OrderService{
 
         Order foundOrder = orderRepository.findByUuid(uuid);
         foundOrder.setTrade_price(trade_price);
-        return;
     }
 
     @Override
     public Order findOrderByUuid(String uuid) {
-        Order foundOrder = orderRepository.findByUuid(uuid);
-        if(foundOrder == null) {
-            return null;
-        } else {
-            return foundOrder;
-        }
+        return orderRepository.findByUuid(uuid);
     }
+
 }
