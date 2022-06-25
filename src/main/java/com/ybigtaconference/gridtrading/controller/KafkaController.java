@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/kafka")
-@CrossOrigin
+@CrossOrigin(origins = "*")
 public class KafkaController {
 
     private final KafkaProducer producer;
