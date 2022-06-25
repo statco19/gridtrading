@@ -304,11 +304,13 @@ public class BotServiceImpl implements BotService {
                                 .get("uuid")
                                 .getAsString();
 
+//                        log.info("\n\n\n\n\ndoneOrder_uuid {} \n\n\n\n\n", doneOrder_uuid);
+
                         String doneOrder = upbit.get_order_uuid(doneOrder_uuid);
 
                         // producer
                         producer.send(doneOrder);
-                        log.info("doneOrder {} ", doneOrder);
+//                        log.info("\n\n\n\n\n\ndoneOrder {} \n\n\n\n\n\n", doneOrder);
 //                        break;
                     }
                 }
@@ -335,6 +337,7 @@ public class BotServiceImpl implements BotService {
                     }
                     price = utilService.get_tick_size(price, "floor");
                     ret = upbit.order("KRW-" + env.getCoin(), price, env.getVolume(), "ask", "limit");
+                    producer.send(ret);
                 } else {
                     side = "ask";
                     if(env.getMode().equals("Arithmetic")) {
@@ -344,6 +347,7 @@ public class BotServiceImpl implements BotService {
                     }
                     price = utilService.get_tick_size(price, "floor");
                     ret = upbit.order("KRW-" + env.getCoin(), price, env.getVolume(), "bid", "limit");
+                    producer.send(ret);
 
                 }
 

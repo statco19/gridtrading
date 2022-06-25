@@ -34,9 +34,10 @@ const COLUMN_DATA = [
 
 const UPDATE_DATA = [
   {
-    timeStamp: "2018-04-17T19:16:00",
-    volume: 11111,
-    price: 111111,
+    order_price: "dmdpdpmdm",
+    trade_price: "dmdpdpmdm",
+    volume: "dmdpdpmdm",
+    side: "dmdpdpmdm"
   },
 ];
 
@@ -58,7 +59,7 @@ function WaitBuyBox({
   const asyncTest = async () => {
     const options = { method: "GET", headers: { Accept: "application/json" } };
     fetch(
-      "https://api.upbit.com/v1/candles/minutes/1?market=KRW-BTC&count=1",
+      "http://localhost:8080/fetch-wait",
       options
     )
       .then((response) => response.json())
@@ -92,33 +93,27 @@ function WaitBuyBox({
   console.log(rows);
   return (
     <div className="ResultBox">
-      <h1 className="ResultBox-heading">미체결(Buy)</h1>
-      <table className="BuyTable" {...getTableProps()}>
-        <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}> {column.render("Header")}</th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => {
-                  return (
-                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                  );
-                })}
+          <h1 className="ResultBox-heading">미체결(Buy)</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>order_price</th>
+                <th>trade_price</th>
+                <th>volume</th>
+                <th>side</th>
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+            </thead>
+            <tbody>
+              {updateTest.map((updateTest) => (
+                <tr key={updateTest.order_price}>
+                  <td>{updateTest.trade_price}</td>
+                  <td>{updateTest.volume}</td>
+                  <td>{updateTest.side}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
   );
 }
 

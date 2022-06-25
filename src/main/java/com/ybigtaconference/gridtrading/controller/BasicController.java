@@ -52,8 +52,8 @@ public class BasicController {
 
     @PostConstruct
     public void init() {
-        orderService.saveOrder(new Order("asd3-ds12-dga3-das2","30000000.0","26500000.0","0.0003", "bid"));
-        orderService.saveOrder(new Order("jgk4-aks7-122l-2jdi","30000000.0","26700000.0","0.0002", "bid"));
+        orderService.saveOrder(new Order("a2s1e3d3-ds12-dga3-das2-3d9n6xl19s4f","27650000.0","26500000.0","0.00024", "bid"));
+        orderService.saveOrder(new Order("j1g0kh3f4-aks7-122l-2jdi-m8x3gl0gs51s","27730000.0","26700000.0","0.00012", "bid"));
 
     }
 

@@ -79,7 +79,7 @@ function LimitForm({
       }),
     }).then((res) => {
       if(res.ok) {
-        navigate(`/results`);
+        navigate('/results');
         console.log("success");
 //        alert("success");
       }

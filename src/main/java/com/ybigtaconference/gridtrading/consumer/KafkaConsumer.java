@@ -25,7 +25,8 @@ public class KafkaConsumer {
 
     @KafkaListener(topics = "grid-test",
             groupId = "grid-demo",
-            containerFactory = "customContainerFactory")
+            containerFactory = "customContainerFactory",
+            concurrency = "3")
     public void consume(String message) throws IOException {
         System.out.println(String.format("Consumed message : %s", message));
 
@@ -56,7 +57,18 @@ public class KafkaConsumer {
                     .getAsString();
 
 
+            log.info("\n\n\n\n\n state : {} \n\n\n\n\n", state);
+            log.info("\n\n\n\n\n before qeury uuid : {} \n\n\n\n\n", orderService.findOrderByUuid(uuid).getUuid());
+            log.info("\n\n\n\n\n before qeury order price : {} \n\n\n\n\n", orderService.findOrderByUuid(uuid).getOrder_price());
+            log.info("\n\n\n\n\n before qeury trade price : {} \n\n\n\n\n", orderService.findOrderByUuid(uuid).getTrade_price());
+
             if(state.equals("wait")) {
+                log.info("\n\n\n\n\n in wait\n\n\n\n\n");
+                log.info("\n\n\n\n\n state : {} \n\n\n\n\n", state);
+                log.info("\n\n\n\n\n before qeury uuid : {} \n\n\n\n\n", orderService.findOrderByUuid(uuid).getUuid());
+                log.info("\n\n\n\n\n before qeury order price : {} \n\n\n\n\n", orderService.findOrderByUuid(uuid).getOrder_price());
+                log.info("\n\n\n\n\n before qeury trade price : {} \n\n\n\n\n", orderService.findOrderByUuid(uuid).getTrade_price());
+
                 if(orderService.findOrderByUuid(uuid) == null) {
                     Order order = new Order(
                             uuid,
@@ -70,8 +82,18 @@ public class KafkaConsumer {
             }
 
             else if (state.equals("done")) {
-               orderService.modify_trade_price(uuid, price);
+                log.info("\n\n\n\n\n in done\n\n\n\n\n");
+                log.info("\n\n\n\n\n state : {} \n\n\n\n\n", state);
+                log.info("\n\n\n\n\n before qeury uuid : {} \n\n\n\n\n", orderService.findOrderByUuid(uuid).getUuid());
+                log.info("\n\n\n\n\n before qeury order price : {} \n\n\n\n\n", orderService.findOrderByUuid(uuid).getOrder_price());
+                log.info("\n\n\n\n\n before qeury trade price : {} \n\n\n\n\n", orderService.findOrderByUuid(uuid).getTrade_price());
+                orderService.modify_trade_price(uuid, price);
             }
+
+            log.info("\n\n\n\n\n state : {} \n\n\n\n\n", state);
+            log.info("\n\n\n\n\n after qeury uuid : {} \n\n\n\n\n", orderService.findOrderByUuid(uuid).getUuid());
+            log.info("\n\n\n\n\n after qeury order price : {} \n\n\n\n\n", orderService.findOrderByUuid(uuid).getOrder_price());
+            log.info("\n\n\n\n\n after qeury trade price : {} \n\n\n\n\n", orderService.findOrderByUuid(uuid).getTrade_price());
 
         } catch (Exception e) {
             log.info("error at Kafka Consumer");
