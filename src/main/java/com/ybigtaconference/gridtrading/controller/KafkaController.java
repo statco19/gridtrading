@@ -104,12 +104,24 @@ public class KafkaController {
 
     @GetMapping("/fetch-wait")
     public List<Order> fetchWait() {
-        return orderRepository.findAllByTrade_priceEquals("0.0");
+        List<Order> res = new ArrayList<>();
+        for(Order order : orderRepository.findAll()) {
+            if(order.getTrade_price().equals("0.0")) {
+                res.add(order);
+            }
+        }
+        return res;
     }
 
     @GetMapping("/fetch-done")
     public List<Order> fetchDone() {
-        return orderRepository.findAllByOrder_priceEquals("0.0");
+        List<Order> res = new ArrayList<>();
+        for(Order order : orderRepository.findAll()) {
+            if(order.getOrder_price().equals("0.0")) {
+                res.add(order);
+            }
+        }
+        return res;
     }
 
 }

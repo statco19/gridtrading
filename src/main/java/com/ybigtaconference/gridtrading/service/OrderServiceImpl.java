@@ -3,6 +3,7 @@ package com.ybigtaconference.gridtrading.service;
 import com.ybigtaconference.gridtrading.db.entity.Order;
 import com.ybigtaconference.gridtrading.db.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService{
@@ -53,7 +55,13 @@ public class OrderServiceImpl implements OrderService{
     public void modify_trade_price(String uuid, String trade_price) {
 
         Order foundOrder = orderRepository.findByUuid(uuid);
+        log.info("modify_trade_price: {}",foundOrder.toString());
+        log.info("modify_trade_price.order_price: {}",foundOrder.getOrder_price().toString());
+        log.info("modify_trade_price.trade_price: {}",foundOrder.getTrade_price().toString());
         foundOrder.setTrade_price(trade_price);
+        log.info("modify_trade_price.order_price: {}",foundOrder.getOrder_price().toString());
+        log.info("modify_trade_price.trade_price: {}",foundOrder.getTrade_price().toString());
+
     }
 
     @Override

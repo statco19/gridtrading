@@ -57,7 +57,7 @@ public class KafkaConsumer {
 
 
             if(state.equals("wait")) {
-                if(orderRepository.findByUuidExists(uuid)) {
+                if(orderService.findOrderByUuid(uuid) == null) {
                     Order order = new Order(
                             uuid,
                             price,
@@ -67,7 +67,9 @@ public class KafkaConsumer {
 
                     orderService.saveOrder(order);
                 }
-            } else if (state.equals("done")) {
+            }
+
+            else if (state.equals("done")) {
                orderService.modify_trade_price(uuid, price);
             }
 

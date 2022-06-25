@@ -296,18 +296,23 @@ public class BotServiceImpl implements BotService {
                     now_list.add(jsonElement.toString());
                 }
 
-                String doneOrder = "";
+                String doneOrder_uuid = "";
                 for(String order : before_list) {
                     if(!now_list.contains(order)) {
-                        doneOrder = order;
-                        break;
+                        doneOrder_uuid = gson.fromJson(order,JsonElement.class)
+                                .getAsJsonObject()
+                                .get("uuid")
+                                .getAsString();
+
+                        String doneOrder = upbit.get_order_uuid(doneOrder_uuid);
+
+                        // producer
+                        producer.send(doneOrder);
+                        log.info("doneOrder {} ", doneOrder);
+//                        break;
                     }
                 }
 
-                // producer
-                producer.send(doneOrder);
-
-                log.info("doneOrder {} ", doneOrder);
                 Double balance_coin = 0.;
 
                 try {
@@ -328,6 +333,7 @@ public class BotServiceImpl implements BotService {
                     } else {
                         price = last_price * env.getDiff();
                     }
+                    price = utilService.get_tick_size(price, "floor");
                     ret = upbit.order("KRW-" + env.getCoin(), price, env.getVolume(), "ask", "limit");
                 } else {
                     side = "ask";
@@ -336,11 +342,10 @@ public class BotServiceImpl implements BotService {
                     } else {
                         price = last_price / env.getDiff();
                     }
-
+                    price = utilService.get_tick_size(price, "floor");
                     ret = upbit.order("KRW-" + env.getCoin(), price, env.getVolume(), "bid", "limit");
 
                 }
-                price = utilService.get_tick_size(price, "floor");
 
                 if(ret.contains("error")) {
                     log.info("trade error");
